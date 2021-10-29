@@ -8,24 +8,11 @@ namespace StatusApp
 {
     public partial class App : Application
 	{
-		protected static IServiceProvider ServiceProvider { get; set; }
-
 		public App()
 		{
 			InitializeComponent();
 
-			this.Setup();
-
-			MainPage = new MainPage(ServiceProvider.GetRequiredService<IAppsettingsService>());
+			MainPage = new MainPage(MauiProgram.App.Services.GetRequiredService<IServicesService>());
 		}
-
-        private void Setup()
-        {
-            ServiceCollection services = new ServiceCollection();
-
-            services.AddSingleton<IAppsettingsService, AppsettingsService>();
-
-            ServiceProvider = services.BuildServiceProvider();
-        }
     }
 }

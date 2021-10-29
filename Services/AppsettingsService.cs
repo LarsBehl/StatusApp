@@ -8,7 +8,7 @@ namespace StatusApp.Services
 {
     public class AppsettingsService : IAppsettingsService
     {
-        private Appsettings _appsettings;
+        private readonly Appsettings _appsettings;
 
         public AppsettingsService()
         {
