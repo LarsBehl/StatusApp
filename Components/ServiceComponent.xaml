@@ -9,9 +9,9 @@
             <Label Text="{Binding Service.Name}" FontAttributes="Bold" FontSize="Medium" />
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
                 <Label Text="HTTP-Status" Grid.Column="0" Grid.Row="0" />
-                <Label Text="{Binding ServiceStatusInformation.StatusCode}" Grid.Column="1" Grid.Row="0" />
+                <Label Text="{Binding Service.StatusCode}" Grid.Column="1" Grid.Row="0" />
                 <Label Text="Response Time" Grid.Column="0" Grid.Row="1" />
-                <Label Text="{Binding ServiceStatusInformation.ResponseTime, StringFormat='{0:F2}ms'}" Grid.Column="1" Grid.Row="1" />
+                <Label Text="{Binding Service.ResponseTime, StringFormat='{0:F2}ms'}" Grid.Column="1" Grid.Row="1" />
             </Grid>
         </VerticalStackLayout>
     </ContentView.Content>

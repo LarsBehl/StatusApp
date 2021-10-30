@@ -10,6 +10,6 @@ namespace StatusApp.Services
         /// Get List of Services from backend
         /// </summary>
         /// <returns>List of services if response was received from server, null otherwise</returns>
-        Task<List<Service>> GetServices();
+        Task<List<ServiceInformation>> GetServiceInformation();
     }
 }

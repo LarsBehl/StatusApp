@@ -7,14 +7,21 @@
     <ScrollView>
         <VerticalStackLayout Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
             <Button 
-                Text="Click me"
+                Text="Update"
                 FontAttributes="Bold"
                 Grid.Row="3"
                 SemanticProperties.Hint="Counts the number of times you click"
                 Clicked="OnCounterClicked"
                 x:Name="ClickButton"
-                HorizontalOptions="Center" Margin="0,0,0,20"/>
-            <VerticalStackLayout x:Name="ServiceList">
+                HorizontalOptions="Center" Margin="0,0,0,20">
+            </Button>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+            <VerticalStackLayout x:Name="ServiceList" IsVisible="{Binding IsLoading}">
+                <VerticalStackLayout.Triggers>
+                    <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding IsLoading}" Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </VerticalStackLayout.Triggers>
                 <!-- Filled by code because of better data handling -->
             </VerticalStackLayout>
         </VerticalStackLayout>
