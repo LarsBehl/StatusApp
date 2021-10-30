@@ -24,15 +24,15 @@ namespace StatusApp.Services
             };
         }
 
-        public async Task<List<Service>> GetServices()
+        public async Task<List<ServiceInformation>> GetServiceInformation()
         {
-            List<Service> result;
+            List<ServiceInformation> result;
             this._cts = new CancellationTokenSource();
             
             try
             {
                 this._cts.CancelAfter(TimeSpan.FromSeconds(5));
-                result = await this._httpClient.GetFromJsonAsync<List<Service>>("/services", this._cts.Token);
+                result = await this._httpClient.GetFromJsonAsync<List<ServiceInformation>>("/services/information", this._cts.Token);
             }
             catch (Exception)
             {
