@@ -16,6 +16,8 @@
                 HorizontalOptions="Center" Margin="0,0,0,20">
             </Button>
             <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+            <Label IsVisible="{Binding NoData}" Text="{Binding Message}" HorizontalOptions="Center">
+            </Label>
             <VerticalStackLayout x:Name="ServiceList" IsVisible="{Binding IsLoading}">
                 <VerticalStackLayout.Triggers>
                     <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding IsLoading}" Value="True">
