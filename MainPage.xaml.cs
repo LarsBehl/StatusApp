@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
 using StatusApp.Components;
 using StatusApp.Domain.Model;
 using StatusApp.Extensions;
@@ -6,6 +7,7 @@ using StatusApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace StatusApp
 {
@@ -14,8 +16,8 @@ namespace StatusApp
         private readonly IServicesService _servicesService;
         private List<ServiceInformation> _services;
         private string _message;
-        private bool _isLoading = true;
-        private bool _noData = false;
+        private bool _isLoading;
+        private bool _noData;
 
         public bool IsLoading
         {
@@ -51,14 +53,19 @@ namespace StatusApp
         {
             InitializeComponent();
             BindingContext = this;
+            this.RefreshView.Command = new Command(async () =>
+            {
+                await this.GetServices();
+                this.FinishedLoading();
+            });
             this._servicesService = servicesService;
-            this.ClickButton.IsEnabled = false;
-            this.GetServices().GetAwaiter().OnCompleted(this.FinishedLoading);
+            this.RefreshView.IsRefreshing = true;
+            this.IsLoading = true;
+            this.NoData = false;
         }
 
         private async void OnCounterClicked(object sender, EventArgs e)
         {
-            this.ClickButton.IsEnabled = false;
             this.IsLoading = true;
             await this.GetServices();
             this.FinishedLoading();
@@ -83,8 +90,19 @@ namespace StatusApp
                 return;
             }
             this.ServiceList.Clear();
+            bool isFirst = true;
             foreach (ServiceInformation service in this._services)
             {
+                if(!isFirst)
+                {
+                    this.ServiceList.Add(new BoxView()
+                    {
+                        HeightRequest = 2,
+                        BackgroundColor = Colors.Gray
+                    });
+                }
+                else
+                    isFirst = false;
                 this.ServiceList.Add(new ServiceComponent(service));
             }
         }
@@ -92,7 +110,7 @@ namespace StatusApp
         private void FinishedLoading()
         {
             this.IsLoading = false;
-            this.ClickButton.IsEnabled = true;
+            this.RefreshView.IsRefreshing = false;
         }
     }
 }

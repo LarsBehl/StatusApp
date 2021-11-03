@@ -4,8 +4,6 @@
              x:Class="StatusApp.Components.ServiceComponent">
     <ContentView.Content>
         <VerticalStackLayout Padding="5">
-            <BoxView HeightRequest="2" BackgroundColor="Grey" Margin="0, 0, 0, 5">
-            </BoxView>
             <Label Text="{Binding Service.Name}" FontAttributes="Bold" FontSize="Medium" />
             <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
                 <Label Text="HTTP-Status" Grid.Column="0" Grid.Row="0" />

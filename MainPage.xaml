@@ -4,28 +4,15 @@
              x:Class="StatusApp.MainPage"
              BackgroundColor="{DynamicResource SecondaryColor}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
-            <Button 
-                Text="Update"
-                FontAttributes="Bold"
-                Grid.Row="3"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                x:Name="ClickButton"
-                HorizontalOptions="Center" Margin="0,0,0,20">
-            </Button>
-            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
-            <Label IsVisible="{Binding NoData}" Text="{Binding Message}" HorizontalOptions="Center">
-            </Label>
-            <VerticalStackLayout x:Name="ServiceList" IsVisible="{Binding IsLoading}">
-                <VerticalStackLayout.Triggers>
-                    <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding IsLoading}" Value="True">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                </VerticalStackLayout.Triggers>
-                <!-- Filled by code because of better data handling -->
+    <RefreshView RefreshColor="{DynamicResource PrimaryColor}" x:Name="RefreshView">
+        <ScrollView>
+            <VerticalStackLayout Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
+                <Label IsVisible="{Binding NoData}" Text="{Binding Message}" HorizontalOptions="Center" />
+                <Label Text="Test" />
+                <VerticalStackLayout x:Name="ServiceList">
+                    <!-- Filled by code because of better data handling -->
+                </VerticalStackLayout>
             </VerticalStackLayout>
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>
