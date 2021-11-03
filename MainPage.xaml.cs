@@ -15,6 +15,7 @@ namespace StatusApp
         private List<ServiceInformation> _services;
         private string _message;
         private bool _isLoading = true;
+        private bool _noData = false;
 
         public bool IsLoading
         {
@@ -23,6 +24,26 @@ namespace StatusApp
             {
                 this._isLoading = value;
                 OnPropertyChanged(nameof(this.IsLoading));
+            }
+        }
+
+        public bool NoData
+        {
+            get => this._noData;
+            set
+            {
+                this._noData = value;
+                OnPropertyChanged(nameof(this.NoData));
+            }
+        }
+
+        public string Message
+        {
+            get => this._message;
+            set
+            {
+                this._message = value;
+                OnPropertyChanged(nameof(this.Message));
             }
         }
 
@@ -35,21 +56,32 @@ namespace StatusApp
             this.GetServices().GetAwaiter().OnCompleted(this.FinishedLoading);
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void OnCounterClicked(object sender, EventArgs e)
         {
             this.ClickButton.IsEnabled = false;
             this.IsLoading = true;
-            this.GetServices().GetAwaiter().OnCompleted(this.FinishedLoading);
+            await this.GetServices();
+            this.FinishedLoading();
         }
 
         private async Task GetServices()
         {
+            if (this.NoData)
+                this.NoData = false;
             this._services = await this._servicesService.GetServiceInformation();
             if (this._services is null)
-                this._message = "Service unavailable";
+            {
+                this.NoData = true;
+                this.Message = "Service unavailable";
+                return;
+            }
 
             if (this._services.IsEmtpy())
-                this._message = "No Services configured";
+            {
+                this.NoData = false;
+                this.Message = "No Services configured";
+                return;
+            }
             this.ServiceList.Clear();
             foreach (ServiceInformation service in this._services)
             {
