@@ -4,5 +4,10 @@
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugFramework>net6.0-android</ActiveDebugFramework>
     <ActiveDebugProfile>Pixel 3a Pie 9.0 - API 28 (Android 9.0 - API 28)</ActiveDebugProfile>
+    <SelectedDevice>pixel_3a_pie_9_0_-_api_28</SelectedDevice>
+    <DefaultDevice>pixel_3a_pie_9_0_-_api_28</DefaultDevice>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
