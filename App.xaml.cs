@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 using StatusApp.Services;
 using System;
 using Application = Microsoft.Maui.Controls.Application;
@@ -12,7 +13,7 @@ namespace StatusApp
 		{
 			InitializeComponent();
 
-			MainPage = new MainPage(MauiProgram.App.Services.GetRequiredService<IServicesService>());
+			MainPage = new SideNav();
 		}
     }
 }

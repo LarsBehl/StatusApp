@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
 using StatusApp.Components;
 using StatusApp.Domain.Model;
 using StatusApp.Extensions;
@@ -47,11 +48,11 @@ namespace StatusApp
             }
         }
 
-        public MainPage(IServicesService servicesService)
+        public MainPage()
         {
             InitializeComponent();
             BindingContext = this;
-            this._servicesService = servicesService;
+            this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
             this.ClickButton.IsEnabled = false;
             this.GetServices().GetAwaiter().OnCompleted(this.FinishedLoading);
         }
@@ -66,6 +67,7 @@ namespace StatusApp
 
         private async Task GetServices()
         {
+            Console.WriteLine("Called Service");
             if (this.NoData)
                 this.NoData = false;
             this._services = await this._servicesService.GetServiceInformation();
