@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace StatusApp
+namespace StatusApp.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class HomeView : ContentPage
     {
         private readonly IServicesService _servicesService;
         private List<ServiceInformation> _services;
@@ -48,7 +48,7 @@ namespace StatusApp
             }
         }
 
-        public MainPage()
+        public HomeView()
         {
             InitializeComponent();
             BindingContext = this;
