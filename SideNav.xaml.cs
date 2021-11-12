@@ -5,7 +5,7 @@ using Microsoft.Maui.Controls.Xaml;
 
 namespace StatusApp
 {
-	public partial class SideNav : FlyoutPage
+	public partial class SideNav : Shell
 	{
 		public SideNav()
 		{

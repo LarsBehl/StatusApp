@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<FlyoutPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:StatusApp"
              x:Class="StatusApp.SideNav"
-             Title="SideNav"
-             BackgroundColor="White">
-    <FlyoutPage.Flyout>
-        <ContentPage Title="This is the Flyout">
-            <VerticalStackLayout>
-                <Label Text="Test" />
-            </VerticalStackLayout>
-        </ContentPage>
-    </FlyoutPage.Flyout>
-    <FlyoutPage.Detail>
-        <NavigationPage>
-            <x:Arguments>
-                <local:MainPage />
-            </x:Arguments>
-        </NavigationPage>
-    </FlyoutPage.Detail>
-</FlyoutPage>
+             Title="SideNav">
+    <Shell.Resources>
+        <Style Class="FlyoutItemLayoutStyle" TargetType="Layout" ApplyToDerivedTypes="True">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#dedede" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </Shell.Resources>
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <GridLayout ColumnDefinitions="0.2*,0.8*" StyleClass="FlyoutItemLayoutStyle">
+                <Image Source="{Binding Icon}"
+                       Margin="5"
+                       HeightRequest="32" />
+                <Label GridLayout.Column="1"
+                       Text="{Binding Title}"
+                       VerticalTextAlignment="Center" />
+            </GridLayout>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <FlyoutItem Title="Home" Icon="home_black.png">
+        <ShellContent  ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+</Shell>
