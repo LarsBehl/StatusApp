@@ -35,7 +35,7 @@
     <FlyoutItem Title="Home" Icon="home_black.png" Shell.NavBarHasShadow="True">
         <ShellContent  ContentTemplate="{DataTemplate local:HomeView}" />
     </FlyoutItem>
-    <FlyoutItem Title="Settings" Icon="settings_black.png">
+    <FlyoutItem Title="Test" Icon="settings_black.png">
         <ShellContent ContentTemplate="{DataTemplate local:SettingsView}" />
     </FlyoutItem>
 </Shell>

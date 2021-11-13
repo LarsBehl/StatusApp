@@ -73,7 +73,7 @@ namespace StatusApp.Views
             if (this._services is null)
             {
                 this.NoData = true;
-                this.Message = "Service unavailable";
+                this.Message = "Service unavailable. Is the backend url configured?";
                 return;
             }
 

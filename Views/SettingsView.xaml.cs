@@ -10,7 +10,10 @@ namespace StatusApp.Views
 	public partial class SettingsView : ContentPage
 	{
 		private readonly IAppsettingsService _settingsService;
+		private readonly IServicesService _servicesService;
+		private static readonly string ERROR_MSG = "The given url is not valid";
 		private string _backendUrl;
+		private bool _hasError;
 
 		public string BackendUrl
         {
@@ -22,20 +25,46 @@ namespace StatusApp.Views
             }
         }
 
+		public bool HasError
+        {
+			get => this._hasError;
+			set
+            {
+				this._hasError = value;
+				OnPropertyChanged(nameof(this.HasError));
+            }
+        }
+
 		public SettingsView()
 		{
 			InitializeComponent();
 			this.BindingContext = this;
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
+			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}
 
-		void SetBackendUrl(object sender, EventArgs e)
+		async void SetBackendUrl(object sender, EventArgs e)
         {
+			this.HasError = false;
 			this.UrlInput.Unfocus();
 			Console.WriteLine("Unfocus called");
-			this._settingsService.StoreBackendUrl(this.UrlInput.Text.Trim());
-        }
+			this.UrlInput.IsEnabled = false;
+			this.UrlInput.IsEnabled = true;
+
+			if(!this._settingsService.StoreBackendUrl(this.UrlInput.Text.Trim()))
+            {
+				this.ErrorMessage.Text = ERROR_MSG;
+				this.HasError = true;
+			}
+
+
+			if (await this._servicesService.GetServiceInformation() is null)
+            {
+				this.ErrorMessage.Text = ERROR_MSG;
+				this.HasError = true;
+			}
+		}
 
 		void UnfocusedEntry(object sender, EventArgs e)
         {
@@ -45,6 +74,7 @@ namespace StatusApp.Views
 		void ClearSettings(object sender, EventArgs e)
         {
 			this._settingsService.ClearBackendUrl();
+			this.BackendUrl = string.Empty;
         }
 	}
 }

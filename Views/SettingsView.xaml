@@ -6,13 +6,16 @@
              BackgroundColor="White">
     <ScrollView>
         <VerticalStackLayout Padding="30">
-            <Label Text="General" />
+            <Label Text="General" FontSize="Large" FontAttributes="Bold" />
             <Entry x:Name="UrlInput"
                    Text="{Binding BackendUrl}"
                    Placeholder="Backend URL"
                    ClearButtonVisibility="WhileEditing"
                    Completed="SetBackendUrl" 
                    Unfocused="UnfocusedEntry" />
+            <Label x:Name="ErrorMessage"
+                   IsVisible="{Binding HasError}"
+                   TextColor="Red" />
             <Button x:Name="Clear"
                     Text="Clear"
                     Clicked="ClearSettings" />
