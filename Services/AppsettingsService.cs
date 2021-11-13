@@ -1,4 +1,5 @@
-﻿using StatusApp.Domain;
+﻿using Microsoft.Maui.Essentials;
+using StatusApp.Domain;
 using System;
 using System.IO;
 using System.Reflection;
@@ -8,6 +9,7 @@ namespace StatusApp.Services
 {
     public class AppsettingsService : IAppsettingsService
     {
+        private static readonly string BACKEND_URL = "backend_url";
         private readonly Appsettings _appsettings;
 
         public AppsettingsService()
@@ -24,9 +26,24 @@ namespace StatusApp.Services
             this._appsettings = JsonSerializer.Deserialize<Appsettings>(jsonString);
         }
 
+        public void ClearBackendUrl()
+        {
+            Preferences.Remove(BACKEND_URL);
+        }
+
         public string GetBackendUrl()
         {
-            return this._appsettings.BackendUrl;
+            return Preferences.Get(BACKEND_URL, string.Empty);
+        }
+
+        public bool StoreBackendUrl(string url)
+        {
+            if(string.IsNullOrWhiteSpace(url))
+                return false;
+
+            Preferences.Set(BACKEND_URL, url);
+
+            return true;
         }
     }
 }

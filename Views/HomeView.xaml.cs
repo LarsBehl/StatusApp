@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace StatusApp
+namespace StatusApp.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class HomeView : ContentPage
     {
         private readonly IServicesService _servicesService;
         private List<ServiceInformation> _services;
@@ -48,7 +48,7 @@ namespace StatusApp
             }
         }
 
-        public MainPage()
+        public HomeView()
         {
             InitializeComponent();
             BindingContext = this;
@@ -67,14 +67,13 @@ namespace StatusApp
 
         private async Task GetServices()
         {
-            Console.WriteLine("Called Service");
             if (this.NoData)
                 this.NoData = false;
             this._services = await this._servicesService.GetServiceInformation();
             if (this._services is null)
             {
                 this.NoData = true;
-                this.Message = "Service unavailable";
+                this.Message = "Service unavailable. Is the backend url configured?";
                 return;
             }
 
