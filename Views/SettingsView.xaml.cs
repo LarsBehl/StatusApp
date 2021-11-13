@@ -33,7 +33,13 @@ namespace StatusApp.Views
 		void SetBackendUrl(object sender, EventArgs e)
         {
 			this.UrlInput.Unfocus();
+			Console.WriteLine("Unfocus called");
 			this._settingsService.StoreBackendUrl(this.UrlInput.Text.Trim());
+        }
+
+		void UnfocusedEntry(object sender, EventArgs e)
+        {
+			Console.WriteLine("Handled unfocus event");
         }
 
 		void ClearSettings(object sender, EventArgs e)

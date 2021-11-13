@@ -11,7 +11,8 @@
                    Text="{Binding BackendUrl}"
                    Placeholder="Backend URL"
                    ClearButtonVisibility="WhileEditing"
-                   Completed="SetBackendUrl" />
+                   Completed="SetBackendUrl" 
+                   Unfocused="UnfocusedEntry" />
             <Button x:Name="Clear"
                     Text="Clear"
                     Clicked="ClearSettings" />
