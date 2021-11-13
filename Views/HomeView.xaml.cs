@@ -67,7 +67,6 @@ namespace StatusApp.Views
 
         private async Task GetServices()
         {
-            Console.WriteLine("Called Service");
             if (this.NoData)
                 this.NoData = false;
             this._services = await this._servicesService.GetServiceInformation();

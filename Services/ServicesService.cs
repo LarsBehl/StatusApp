@@ -18,14 +18,24 @@ namespace StatusApp.Services
         {
             this._appsettingsService = appsettingsService;
 
-            this._httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri(this._appsettingsService.GetBackendUrl())
-            };
+            this._httpClient = null;
         }
 
         public async Task<List<ServiceInformation>> GetServiceInformation()
         {
+            if(this._httpClient is null)
+            {
+                string url = this._appsettingsService.GetBackendUrl();
+
+                if(string.IsNullOrEmpty(url))
+                    return null;
+
+                this._httpClient = new HttpClient()
+                {
+                    BaseAddress = new Uri(url)
+                };
+            }
+
             List<ServiceInformation> result;
             this._cts = new CancellationTokenSource();
             

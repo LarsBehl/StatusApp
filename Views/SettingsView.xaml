@@ -5,6 +5,16 @@
              Title="Settings"
              BackgroundColor="White">
     <ScrollView>
-        <Label Text="Settings" />
+        <VerticalStackLayout Padding="30">
+            <Label Text="General" />
+            <Entry x:Name="UrlInput"
+                   Text="{Binding BackendUrl}"
+                   Placeholder="Backend URL"
+                   ClearButtonVisibility="WhileEditing"
+                   Completed="SetBackendUrl" />
+            <Button x:Name="Clear"
+                    Text="Clear"
+                    Clicked="ClearSettings" />
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
