@@ -23,16 +23,14 @@
                     Clicked="ClearSettings"
                     Margin="16 0"/>
             <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0 0 16 0" />
-            <FlexLayout Direction="Row"
-                        AlignItems="Center"
-                        JustifyContent="SpaceBetween"
-                        Margin="16 0">
+            <HorizontalStackLayout>
                 <Label Text="Administration"
                        FontSize="Large"
                        FontAttributes="Bold" />
                 <ImageButton Source="logout_black.png"
+                             IsVisible="{Binding IsLoggedIn}"
                              Clicked="HandleLogout" />
-            </FlexLayout>
+            </HorizontalStackLayout>
             <ContentView IsVisible="{Binding IsLoggedIn, Converter={u:InverseBoolConverter}}">
                 <c:LoginComponent OnLoginSuccess="HandleLogin" />
             </ContentView>

@@ -105,6 +105,8 @@ namespace StatusApp.Components
             if (responseType == LoginResponseType.Success)
             {
                 this.OnLoginSuccess.Invoke(this, null);
+                this.UsernameInput.Text = string.Empty;
+                this.PasswordInput.Text = string.Empty;
                 return;
             }
 
