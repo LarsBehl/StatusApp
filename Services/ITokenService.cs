@@ -10,5 +10,6 @@ namespace StatusApp.Services
     {
         Task StoreTokenAsync(string token);
         Task<string> LoadTokenAsync();
+        void RemoveToken();
     }
 }

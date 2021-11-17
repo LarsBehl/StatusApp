@@ -11,6 +11,7 @@ namespace StatusApp.Views
 	{
 		private readonly IAppsettingsService _settingsService;
 		private readonly IServicesService _servicesService;
+		private readonly IUserService _userService;
 		private static readonly string ERROR_MSG = "The given url is not valid";
 		private string _backendUrl;
 		private bool _hasError;
@@ -52,6 +53,7 @@ namespace StatusApp.Views
 			this.BindingContext = this;
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
 			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
+			this._userService = MauiProgram.App.Services.GetRequiredService<IUserService>();
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}
 
@@ -81,6 +83,13 @@ namespace StatusApp.Views
         {
 			Console.WriteLine("HandleLogin called");
 			this.IsLoggedIn = true;
+        }
+
+		public void HandleLogout(object sender, EventArgs e)
+        {
+			Console.WriteLine("HandleLogout called");
+			this._userService.LogoutUser();
+			this.IsLoggedIn = false;
         }
 
 		void UnfocusedEntry(object sender, EventArgs e)

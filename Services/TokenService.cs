@@ -16,6 +16,11 @@ namespace StatusApp.Services
             return await SecureStorage.GetAsync(TOKEN_NAME);
         }
 
+        public void RemoveToken()
+        {
+            SecureStorage.Remove(TOKEN_NAME);
+        }
+
         public async Task StoreTokenAsync(string token)
         {
             await SecureStorage.SetAsync(TOKEN_NAME, token);

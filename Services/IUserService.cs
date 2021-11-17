@@ -10,5 +10,6 @@ namespace StatusApp.Services
     public interface IUserService
     {
         Task<LoginResponseType> LoginUserAsync(string username, string password);
+        void LogoutUser();
     }
 }
