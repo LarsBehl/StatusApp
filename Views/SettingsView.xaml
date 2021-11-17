@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:StatusApp.Components"
+             xmlns:u="clr-namespace:StatusApp.Util"
              x:Class="StatusApp.Views.SettingsView"
              Title="Settings"
              BackgroundColor="White">
@@ -18,7 +20,14 @@
                    TextColor="Red" />
             <Button x:Name="Clear"
                     Text="Clear"
-                    Clicked="ClearSettings" />
+                    Clicked="ClearSettings"
+                    Margin="16 0"/>
+            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0 0 16 0" />
+            <Label Text="Administration" FontSize="Large" FontAttributes="Bold" />
+            <ContentView IsVisible="{Binding IsLoggedIn, Converter={u:InverseBoolConverter}}">
+                <c:LoginComponent OnLoginSuccess="HandleLogin" />
+            </ContentView>
+            <Label Text="User is logged in" IsVisible="{Binding IsLoggedIn}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

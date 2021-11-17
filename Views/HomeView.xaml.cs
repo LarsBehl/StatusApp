@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using StatusApp.Components;
 using StatusApp.Domain.Model;
+using StatusApp.Domain.Model.DTOs;
 using StatusApp.Extensions;
 using StatusApp.Services;
 using System;
