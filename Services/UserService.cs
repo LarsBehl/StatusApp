@@ -68,5 +68,11 @@ namespace StatusApp.Services
 
             return LoginResponseType.Success;
         }
+
+        public void LogoutUser()
+        {
+            this._tokenService.RemoveToken();
+            this.CurrentUser = null;
+        }
     }
 }
