@@ -28,6 +28,8 @@ namespace StatusApp
         {
             services.AddSingleton<IAppsettingsService, AppsettingsService>();
             services.AddSingleton<IServicesService, ServicesService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ITokenService, TokenService>();
         }
     }
 }

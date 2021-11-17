@@ -14,6 +14,7 @@ namespace StatusApp.Views
 		private static readonly string ERROR_MSG = "The given url is not valid";
 		private string _backendUrl;
 		private bool _hasError;
+		private bool _isLoggedIn;
 
 		public string BackendUrl
         {
@@ -32,6 +33,16 @@ namespace StatusApp.Views
             {
 				this._hasError = value;
 				OnPropertyChanged(nameof(this.HasError));
+            }
+        }
+
+		public bool IsLoggedIn
+        {
+			get => this._isLoggedIn;
+			set
+            {
+				this._isLoggedIn = value;
+				this.OnPropertyChanged(nameof(this.IsLoggedIn));
             }
         }
 
@@ -65,6 +76,12 @@ namespace StatusApp.Views
 				this.HasError = true;
 			}
 		}
+
+		public void HandleLogin(object sender, EventArgs e)
+        {
+			Console.WriteLine("HandleLogin called");
+			this.IsLoggedIn = true;
+        }
 
 		void UnfocusedEntry(object sender, EventArgs e)
         {

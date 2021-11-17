@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace StatusApp.Domain.Model
+namespace StatusApp.Domain.Model.DTOs
 {
     public class ServiceInformation
     {

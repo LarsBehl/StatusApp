@@ -1,4 +1,5 @@
 ﻿using StatusApp.Domain.Model;
+using StatusApp.Domain.Model.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
