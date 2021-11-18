@@ -97,6 +97,11 @@ namespace StatusApp.Views
 			Console.WriteLine("Handled unfocus event");
         }
 
+		void NavigateServicesView(object sender, EventArgs e)
+        {
+			Console.WriteLine("Navigating to Services view");
+        }
+
 		void ClearSettings(object sender, EventArgs e)
         {
 			this._settingsService.ClearBackendUrl();
