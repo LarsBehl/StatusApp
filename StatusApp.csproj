@@ -63,10 +63,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Components\" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <Compile Update="Components\ServiceInformationComponent.xaml.cs">
+	    <DependentUpon>ServiceInformationComponent.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\HomeView.xaml.cs">
 	    <DependentUpon>HomeView.xaml</DependentUpon>
 	  </Compile>

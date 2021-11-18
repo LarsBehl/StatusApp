@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
+             x:Class="StatusApp.Views.ServicesView"
+             Title="Services"
+             BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="30">
+            <Button Text="Refresh"
+                    Clicked="RefreshServices"/>
+            <ImageButton HorizontalOptions="Center"
+                         Source="add_black.png"
+                         Clicked="CreateService">
+                <ImageButton.Shadow>
+                    <Shadow Brush="#000000"
+                            Offset="2,2"
+                            Radius="10"
+                            Opacity="0.8" />
+                </ImageButton.Shadow>
+            </ImageButton>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+            <Label IsVisible="{Binding HasLoadingError}" Text="{Binding ErrorMessage}" />
+            <VerticalStackLayout x:Name="ServiceList"
+                                 IsVisible="{Binding IsLoading, Converter={u:InverseBoolConverter}}">
+                <!-- Filled by code -->
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

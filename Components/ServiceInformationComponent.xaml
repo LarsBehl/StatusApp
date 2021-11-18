@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StatusApp.Components.ServiceInformationComponent">
+    <ContentView.Content>
+        <VerticalStackLayout Padding="5">
+            <BoxView HeightRequest="2" BackgroundColor="Grey" Margin="0, 0, 0, 5">
+            </BoxView>
+            <Label Text="{Binding Service.Name}" FontAttributes="Bold" FontSize="Medium" />
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                <Label Text="HTTP-Status" Grid.Column="0" Grid.Row="0" />
+                <Label Text="{Binding Service.StatusCode}" Grid.Column="1" Grid.Row="0" />
+                <Label Text="Response Time" Grid.Column="0" Grid.Row="1" />
+                <Label Text="{Binding Service.ResponseTime, StringFormat='{0:F2}ms'}" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+        </VerticalStackLayout>
+    </ContentView.Content>
+</ContentView>

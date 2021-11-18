@@ -3,16 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="StatusApp.Components.ServiceComponent">
     <ContentView.Content>
-        <VerticalStackLayout Padding="5">
-            <BoxView HeightRequest="2" BackgroundColor="Grey" Margin="0, 0, 0, 5">
-            </BoxView>
-            <Label Text="{Binding Service.Name}" FontAttributes="Bold" FontSize="Medium" />
-            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
-                <Label Text="HTTP-Status" Grid.Column="0" Grid.Row="0" />
-                <Label Text="{Binding Service.StatusCode}" Grid.Column="1" Grid.Row="0" />
-                <Label Text="Response Time" Grid.Column="0" Grid.Row="1" />
-                <Label Text="{Binding Service.ResponseTime, StringFormat='{0:F2}ms'}" Grid.Column="1" Grid.Row="1" />
-            </Grid>
-        </VerticalStackLayout>
+        <Frame CornerRadius="10"
+               Margin="8 0">
+            <VerticalStackLayout>
+                <Label Text="{Binding Service.Name}" />
+                <Label Text="{Binding Service.Url}" />
+            </VerticalStackLayout>
+        </Frame>
     </ContentView.Content>
 </ContentView>

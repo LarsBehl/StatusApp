@@ -1,56 +1,51 @@
-﻿using StatusApp.Domain.Model;
-using StatusApp.Domain.Model.DTOs;
+﻿using StatusApp.Domain.Model.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace StatusApp.Services
 {
     public class ServicesService : IServicesService
     {
+        private readonly ITokenService _tokenService;
         private readonly IAppsettingsService _appsettingsService;
         private HttpClient _httpClient;
-        private CancellationTokenSource _cts;
 
-        public ServicesService(IAppsettingsService appsettingsService)
+        public ServicesService(ITokenService tokenService, IAppsettingsService appsettingsService)
         {
+            this._tokenService = tokenService;
             this._appsettingsService = appsettingsService;
-
             this._httpClient = null;
         }
 
-        public async Task<List<ServiceInformation>> GetServiceInformation()
+        public async Task<List<Service>> GetServicesAsync()
         {
-            if(this._httpClient is null)
+            if (this._httpClient is null)
             {
-                string url = this._appsettingsService.GetBackendUrl();
-
-                if(string.IsNullOrEmpty(url))
-                    return null;
-
                 this._httpClient = new HttpClient()
                 {
-                    BaseAddress = new Uri(url)
+                    BaseAddress = new Uri(this._appsettingsService.GetBackendUrl())
                 };
+
+                this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
             }
 
-            List<ServiceInformation> result;
-            this._cts = new CancellationTokenSource();
-            
+            List<Service> services = null;
             try
             {
-                this._cts.CancelAfter(TimeSpan.FromSeconds(5));
-                result = await this._httpClient.GetFromJsonAsync<List<ServiceInformation>>("/services/information", this._cts.Token);
+                services = await this._httpClient.GetFromJsonAsync<List<Service>>("/services");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = null;
+                Console.WriteLine(e);
             }
 
-            return result;
+            return services;
         }
     }
 }
