@@ -1,13 +1,12 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
 using StatusApp.Services;
+using System;
 
 namespace StatusApp.Views
 {
-	public partial class SettingsView : ContentPage
+    public partial class SettingsView : ContentPage
 	{
 		private readonly IAppsettingsService _settingsService;
 		private readonly IServicesService _servicesService;
@@ -54,6 +53,7 @@ namespace StatusApp.Views
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
 			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
 			this._userService = MauiProgram.App.Services.GetRequiredService<IUserService>();
+			this._userService.OnAutomaticLogout += (sender, args) => this.IsLoggedIn = false;
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}
 
