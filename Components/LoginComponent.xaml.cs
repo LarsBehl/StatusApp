@@ -1,10 +1,9 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
 using StatusApp.Domain;
 using StatusApp.Services;
+using System;
 
 namespace StatusApp.Components
 {
