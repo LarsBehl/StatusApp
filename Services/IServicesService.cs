@@ -1,8 +1,5 @@
 ﻿using StatusApp.Domain.Model.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StatusApp.Services
@@ -10,5 +7,6 @@ namespace StatusApp.Services
     public interface IServicesService
     {
         Task<List<Service>> GetServicesAsync();
+        Task<Service> CreateServiceAsync(string name, string url);
     }
 }

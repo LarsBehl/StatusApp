@@ -1,11 +1,10 @@
 ﻿using StatusApp.Domain.Model.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StatusApp.Services
@@ -21,6 +20,26 @@ namespace StatusApp.Services
             this._tokenService = tokenService;
             this._appsettingsService = appsettingsService;
             this._httpClient = null;
+        }
+
+        public async Task<Service> CreateServiceAsync(string name, string url)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            HttpResponseMessage response;
+            try
+            {
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await _httpClient.PostAsJsonAsync("/services", new ServiceConfigurationRequest(name, url), cts.Token);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<Service>();
         }
 
         public async Task<List<Service>> GetServicesAsync()

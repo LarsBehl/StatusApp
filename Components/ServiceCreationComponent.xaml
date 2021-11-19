@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
              x:Class="StatusApp.Components.ServiceCreationComponent"
              Title="ServiceCreationComponent"
              BackgroundColor="White">
@@ -30,14 +31,19 @@
                        TextColor="Red" />
                 </VerticalStackLayout>
             </Frame>
+            <ActivityIndicator IsEnabled="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+            <Label Text="There was an error configuring the service"
+                   IsVisible="{Binding HasConfigurationError}" />
         </VerticalStackLayout>
         <HorizontalStackLayout GridLayout.Row="1">
             <Button Text="Back"
                     TextColor="{DynamicResource PrimaryColor}"
                     BackgroundColor="{DynamicResource SecondaryColor}"
-                    Clicked="OnBackButtonPressed"/>
+                    Clicked="OnBackButtonPressed"
+                    IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
             <Button Text="Submit"
-                    Clicked="OnSubmitButtonPressed"/>
+                    Clicked="OnSubmitButtonPressed"
+                    IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
         </HorizontalStackLayout>
     </GridLayout>
 </ContentPage>

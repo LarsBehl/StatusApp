@@ -6,6 +6,7 @@ using StatusApp.Domain.Model.DTOs;
 using StatusApp.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StatusApp.Views
@@ -21,6 +22,7 @@ namespace StatusApp.Views
 		private bool _hasLoadingError;
 		private string _errorMessage;
 		private List<Service> _services;
+		private ServiceCreationComponent _serviceCreationComponent;
 
 		public bool IsLoading
         {
@@ -88,8 +90,15 @@ namespace StatusApp.Views
 
 		public async void CreateService(object sender, EventArgs e)
         {
-			// TODO implement
-			await this.Navigation.PushModalAsync(new ServiceCreationComponent());
+			this._serviceCreationComponent = new ServiceCreationComponent();
+			App.Current.ModalPopping += this.HandleModalPopping;
+			await this.Navigation.PushModalAsync(this._serviceCreationComponent);
+        }
+
+		private async void HandleModalPopping(object sender, ModalPoppingEventArgs e)
+        {
+			if(e.Modal == this._serviceCreationComponent && this._serviceCreationComponent.Service != null)
+				await this.LoadServices();
         }
 	}
 }

@@ -1,8 +1,11 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using StatusApp.Domain.Model.DTOs;
+using StatusApp.Services;
 
 namespace StatusApp.Components
 {
@@ -11,10 +14,13 @@ namespace StatusApp.Components
 		private static readonly string SERVICE_CREATION_TITLE = "Create a new Service";
 		private static readonly string SERVICE_EDIT_TITLE = "Edit an existing Service";
 
-		private Service _service;
+		private readonly IServicesService _servicesService;
+
 		private string _pageTitle;
 		private bool _hasNameError;
 		private bool _hasUrlError;
+		private bool _hasConfigurationError;
+		private bool _isLoading;
 
 		public string PageTitle
         {
@@ -46,6 +52,28 @@ namespace StatusApp.Components
             }
         }
 
+		public bool HasConfigurationError
+        {
+			get => this._hasConfigurationError;
+			set
+            {
+				this._hasConfigurationError = value;
+				this.OnPropertyChanged(nameof(this.HasConfigurationError));
+            }
+        }
+
+		public bool IsLoading
+        {
+			get => this._isLoading;
+			set
+            {
+				this._isLoading = value;
+				this.OnPropertyChanged(nameof(this.IsLoading));
+            }
+        }
+
+		public Service Service { get; set; }
+
 		public ServiceCreationComponent(): this(null)
 		{
 			
@@ -55,13 +83,14 @@ namespace StatusApp.Components
         {
 			InitializeComponent();
 			this.BindingContext = this;
-			this._service = service;
+			this.Service = service;
+			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
 
-			if (this._service is not null)
+			if (this.Service is not null)
 			{
 				this.PageTitle = SERVICE_EDIT_TITLE;
-				this.NameInput.Text = this._service.Name;
-				this.UrlInput.Text = this._service.Url;
+				this.NameInput.Text = this.Service.Name;
+				this.UrlInput.Text = this.Service.Url;
 			}
 			else
 				this.PageTitle = SERVICE_CREATION_TITLE;
@@ -69,12 +98,51 @@ namespace StatusApp.Components
 
 		private bool ValidateInput(string input) => !string.IsNullOrWhiteSpace(input);
 
-		public async void OnBackButtonPressed(object sender, EventArgs e) => await this.Navigation.PopModalAsync();
+		public async void OnBackButtonPressed(object sender, EventArgs e)
+		{
+			this.Service = null;
+			await this.Navigation.PopModalAsync();
+		}
 
-		public async void OnSubmitButtonPressed(object sender, EventArgs e)
+        protected override bool OnBackButtonPressed()
         {
-			// TODO implement
-			throw new NotImplementedException();
+			if (this.IsLoading)
+				return true;
+			this.Service = null;
+			return base.OnBackButtonPressed();
+        }
+
+        public async void OnSubmitButtonPressed(object sender, EventArgs e)
+        {
+			this.IsLoading = true;
+			this.HasUrlError = false;
+			this.HasNameError = false;
+			string url = this.UrlInput.Text;
+			string name = this.NameInput.Text;
+
+			if(!this.ValidateInput(name))
+            {
+				this.HasNameError = true;
+				this.IsLoading = false;
+				return;
+            }
+
+			bool success = Uri.TryCreate(url, UriKind.Absolute, out Uri _);
+
+			if (!this.ValidateInput(url) || !success)
+            {
+				this.HasUrlError = true;
+				this.IsLoading = false;
+				return;
+            }
+
+			this.Service = await this._servicesService.CreateServiceAsync(name, url);
+
+			if(this.Service is null)
+				this.HasConfigurationError = true;
+
+			this.IsLoading = false;
+			await this.Navigation.PopModalAsync();
         }
 	}
 }
