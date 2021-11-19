@@ -70,6 +70,7 @@ namespace StatusApp.Components
 		private bool ValidateInput(string input) => !string.IsNullOrWhiteSpace(input);
 
 		public async void OnBackButtonPressed(object sender, EventArgs e) => await this.Navigation.PopModalAsync();
+
 		public async void OnSubmitButtonPressed(object sender, EventArgs e)
         {
 			// TODO implement

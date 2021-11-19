@@ -53,8 +53,13 @@ namespace StatusApp.Views
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
 			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
 			this._userService = MauiProgram.App.Services.GetRequiredService<IUserService>();
-			// TODO clear navigation and modal navigation; display message?
-			this._userService.OnAutomaticLogout += (sender, args) => this.IsLoggedIn = false;
+			this._userService.OnAutomaticLogout += async (sender, args) =>
+			{
+				this.IsLoggedIn = false;
+				await this.Navigation.PopToRootAsync();
+				await DisplayAlert("Logout", "You have been logged out due to Token expiration", "OK");
+
+			};
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}
 
