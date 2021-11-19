@@ -53,6 +53,7 @@ namespace StatusApp.Views
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
 			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
 			this._userService = MauiProgram.App.Services.GetRequiredService<IUserService>();
+			// TODO clear navigation and modal navigation; display message?
 			this._userService.OnAutomaticLogout += (sender, args) => this.IsLoggedIn = false;
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}

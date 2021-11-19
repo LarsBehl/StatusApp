@@ -89,6 +89,7 @@ namespace StatusApp.Views
 		public async void CreateService(object sender, EventArgs e)
         {
 			// TODO implement
+			await this.Navigation.PushModalAsync(new ServiceCreationComponent());
         }
 	}
 }
