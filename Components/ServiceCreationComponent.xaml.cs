@@ -136,7 +136,10 @@ namespace StatusApp.Components
 				return;
             }
 
-			this.Service = await this._servicesService.CreateServiceAsync(name, url);
+			if(this.Service is null)
+				this.Service = await this._servicesService.CreateServiceAsync(name, url);
+			else
+				this.Service = await this._servicesService.UpdateServiceAsync(name, url);
 
 			if(this.Service is null)
 				this.HasConfigurationError = true;

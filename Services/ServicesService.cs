@@ -31,7 +31,7 @@ namespace StatusApp.Services
                 cts.CancelAfter(TimeSpan.FromSeconds(5));
                 response = await _httpClient.PostAsJsonAsync("/services", new ServiceConfigurationRequest(name, url), cts.Token);
 
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.Created)
                     return null;
             }
             catch (Exception)
@@ -65,6 +65,26 @@ namespace StatusApp.Services
             }
 
             return services;
+        }
+
+        public async Task<Service> UpdateServiceAsync(string name, string url)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            HttpResponseMessage response;
+            try
+            {
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await _httpClient.PutAsJsonAsync("/services", new ServiceConfigurationRequest(name, url), cts.Token);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<Service>();
         }
     }
 }
