@@ -54,6 +54,19 @@
                                VerticalOptions="Center"/>
                         <Image Source="chevron_right_black.png" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
+                    <BoxView HeightRequest="2"
+                             BackgroundColor="#DBDBDB"
+                             Margin="0,8" />
+                    <HorizontalStackLayout>
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="NavigateUsersView" />
+                        </HorizontalStackLayout.GestureRecognizers>
+                        <Label Text="Users"
+                               FontSize="Medium"
+                               VerticalOptions="Center" />
+                        <Image Source="chevron_right_black.png"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>

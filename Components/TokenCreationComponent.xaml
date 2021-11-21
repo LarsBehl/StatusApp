@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StatusApp.Components.TokenCreationComponent"
+             Title="TokenCreationComponent"
+             BackgroundColor="White">
+    <GridLayout Padding="48"
+                ColumnDefinitions="*"
+                RowDefinitions="Auto,*,64">
+
+        <Label Text="User Token Creation"
+               FontSize="Large"
+               HorizontalOptions="Center"/>
+        <Frame CornerRadius="10"
+               Margin="0,16"
+               GridLayout.Row="1">
+            <VerticalStackLayout>
+                <Label HorizontalTextAlignment="Center"
+                       Text="The created Token is:" />
+                <Label HorizontalTextAlignment="Center"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       Text="{Binding TokenString}" />
+                <Label HorizontalTextAlignment="Center"
+                       Text="The Token is needed to create a new User. Simply hand out the Token to the person who wants to register a new Account. The user needs to supply the Token during the registration." />
+                <Label HorizontalTextAlignment="Center"
+                       Text="Please note that the Token will expire on" />
+                <Label HorizontalTextAlignment="Center"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       Text="{Binding ExpirationString}" />
+                <Label HorizontalTextAlignment="Center"
+                       Text="Please DO NOT create an account and hand over the login information to the new user" />
+            </VerticalStackLayout>
+        </Frame>
+        <Button Text="OK"
+                GridLayout.Row="2"
+                Clicked="OnOkClicked" />
+    </GridLayout>
+</ContentPage>

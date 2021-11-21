@@ -109,6 +109,12 @@ namespace StatusApp.Views
 			Console.WriteLine("Navigating to Services view");
         }
 
+		async void NavigateUsersView(object sender, EventArgs e)
+        {
+			await this.Navigation.PushAsync(new UsersView());
+			Console.WriteLine("Navigating to Users view");
+        }
+
 		void ClearSettings(object sender, EventArgs e)
         {
 			this._settingsService.ClearBackendUrl();
