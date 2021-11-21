@@ -3,6 +3,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using StatusApp.Domain;
 using StatusApp.Services;
+using StatusApp.Views;
 using System;
 
 namespace StatusApp.Components
@@ -116,6 +117,11 @@ namespace StatusApp.Components
                 this.LoginError.Text = LOGIN_ERROR_MSG;
 
             this.HasLoginError = true;
+        }
+
+        async void OnRegisterClicked(object sender, EventArgs e)
+        {
+            await this.Navigation.PushAsync(new UserFormView());
         }
 
         public void UnfocusedEntry(object sender, EventArgs e) => this.ValidateInputs();
