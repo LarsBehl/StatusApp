@@ -27,9 +27,10 @@ namespace StatusApp
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
             services.AddSingleton<IAppsettingsService, AppsettingsService>();
-            services.AddSingleton<IServicesService, ServicesService>();
+            services.AddSingleton<IServiceInformationService, ServiceInformationService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITokenService, TokenService>();
+            services.AddSingleton<IServicesService, ServicesService>();
         }
     }
 }

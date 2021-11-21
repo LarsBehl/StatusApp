@@ -9,20 +9,25 @@
     <ScrollView>
         <VerticalStackLayout Padding="30">
             <Label Text="General" FontSize="Large" FontAttributes="Bold" />
-            <Entry x:Name="UrlInput"
-                   Text="{Binding BackendUrl}"
-                   Placeholder="Backend URL"
-                   ClearButtonVisibility="WhileEditing"
-                   Completed="SetBackendUrl" 
-                   Unfocused="UnfocusedEntry" />
-            <Label x:Name="ErrorMessage"
-                   IsVisible="{Binding HasError}"
-                   TextColor="Red" />
-            <Button x:Name="Clear"
-                    Text="Clear"
-                    Clicked="ClearSettings"
-                    Margin="16 0"/>
-            <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0 0 16 0" />
+            <Frame CornerRadius="10"
+                   Margin="16 0">
+                <VerticalStackLayout>
+                    <Label Text="Backend URL" />
+                    <Entry x:Name="UrlInput"
+                           Text="{Binding BackendUrl}"
+                           Placeholder="Backend URL"
+                           ClearButtonVisibility="WhileEditing"
+                           Completed="SetBackendUrl" 
+                           Unfocused="UnfocusedEntry" />
+                    <Label x:Name="ErrorMessage"
+                           IsVisible="{Binding HasError}"
+                           TextColor="Red" />
+                    <Button x:Name="Clear"
+                            Text="Clear"
+                            Clicked="ClearSettings"
+                            Margin="16 0"/>
+                </VerticalStackLayout>
+            </Frame>
             <HorizontalStackLayout>
                 <Label Text="Administration"
                        FontSize="Large"
@@ -31,10 +36,26 @@
                              IsVisible="{Binding IsLoggedIn}"
                              Clicked="HandleLogout" />
             </HorizontalStackLayout>
-            <ContentView IsVisible="{Binding IsLoggedIn, Converter={u:InverseBoolConverter}}">
+            <Frame CornerRadius="10"
+                   IsVisible="{Binding IsLoggedIn, Converter={u:InverseBoolConverter}}"
+                   Margin="16 0">
                 <c:LoginComponent OnLoginSuccess="HandleLogin" />
-            </ContentView>
-            <Label Text="User is logged in" IsVisible="{Binding IsLoggedIn}" />
+            </Frame>
+            <Frame IsVisible="{Binding IsLoggedIn}"
+                   CornerRadius="10"
+                   Margin="16 0">
+                <VerticalStackLayout>
+                    <HorizontalStackLayout>
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="NavigateServicesView" />
+                        </HorizontalStackLayout.GestureRecognizers>
+                        <Label Text="Services"
+                               FontSize="Medium" 
+                               VerticalOptions="Center"/>
+                        <Image Source="chevron_right_black.png" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

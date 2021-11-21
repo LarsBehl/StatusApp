@@ -9,7 +9,7 @@ namespace StatusApp.Views
     public partial class SettingsView : ContentPage
 	{
 		private readonly IAppsettingsService _settingsService;
-		private readonly IServicesService _servicesService;
+		private readonly IServiceInformationService _servicesService;
 		private readonly IUserService _userService;
 		private static readonly string ERROR_MSG = "The given url is not valid";
 		private string _backendUrl;
@@ -51,9 +51,15 @@ namespace StatusApp.Views
 			InitializeComponent();
 			this.BindingContext = this;
 			this._settingsService = MauiProgram.App.Services.GetRequiredService<IAppsettingsService>();
-			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
+			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
 			this._userService = MauiProgram.App.Services.GetRequiredService<IUserService>();
-			this._userService.OnAutomaticLogout += (sender, args) => this.IsLoggedIn = false;
+			this._userService.OnAutomaticLogout += async (sender, args) =>
+			{
+				this.IsLoggedIn = false;
+				await this.Navigation.PopToRootAsync();
+				await DisplayAlert("Logout", "You have been logged out due to Token expiration", "OK");
+
+			};
 			this.BackendUrl = this._settingsService.GetBackendUrl();
 		}
 
@@ -95,6 +101,12 @@ namespace StatusApp.Views
 		void UnfocusedEntry(object sender, EventArgs e)
         {
 			Console.WriteLine("Handled unfocus event");
+        }
+
+		async void NavigateServicesView(object sender, EventArgs e)
+        {
+			await this.Navigation.PushAsync(new ServicesView());
+			Console.WriteLine("Navigating to Services view");
         }
 
 		void ClearSettings(object sender, EventArgs e)

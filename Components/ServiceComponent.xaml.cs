@@ -1,31 +1,40 @@
-using StatusApp.Domain.Model;
+using Microsoft.Maui.Controls;
 using StatusApp.Domain.Model.DTOs;
+using System;
 
 namespace StatusApp.Components
 {
-    public partial class ServiceComponent
-    {
-        // properties
-        private ServiceInformation _service;
-        public ServiceInformation Service
+    public partial class ServiceComponent : ContentView
+	{
+		private Service _service;
+
+		public event EventHandler<int> OnMore;
+
+		public Service Service
         {
-            get => _service;
-            set
+			get => this._service;
+			set
             {
-                this._service = value;
-                OnPropertyChanged(nameof(Service));
+				this._service = value;
+				this.OnPropertyChanged(nameof(this.Service));
             }
         }
 
-        public ServiceComponent()
+		public ServiceComponent()
+		{
+			InitializeComponent();
+			BindingContext = this;
+		}
+
+		public ServiceComponent(Service service) : this()
         {
-            InitializeComponent();
-            this.BindingContext = this;
+			this.Service = service;
         }
 
-        public ServiceComponent(ServiceInformation service) : this()
+		// TODO implement
+		public void OnMoreClicked(object sender, EventArgs e)
         {
-            this.Service = service;
+			this.OnMore?.Invoke(this, this.Service.Id);
         }
-    }
+	}
 }

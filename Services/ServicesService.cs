@@ -1,8 +1,8 @@
-﻿using StatusApp.Domain.Model;
-using StatusApp.Domain.Model.DTOs;
+﻿using StatusApp.Domain.Model.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,46 +11,100 @@ namespace StatusApp.Services
 {
     public class ServicesService : IServicesService
     {
+        private readonly ITokenService _tokenService;
         private readonly IAppsettingsService _appsettingsService;
         private HttpClient _httpClient;
-        private CancellationTokenSource _cts;
 
-        public ServicesService(IAppsettingsService appsettingsService)
+        public ServicesService(ITokenService tokenService, IAppsettingsService appsettingsService)
         {
+            this._tokenService = tokenService;
             this._appsettingsService = appsettingsService;
-
             this._httpClient = null;
         }
 
-        public async Task<List<ServiceInformation>> GetServiceInformation()
+        public async Task<Service> CreateServiceAsync(string name, string url)
         {
-            if(this._httpClient is null)
-            {
-                string url = this._appsettingsService.GetBackendUrl();
-
-                if(string.IsNullOrEmpty(url))
-                    return null;
-
-                this._httpClient = new HttpClient()
-                {
-                    BaseAddress = new Uri(url)
-                };
-            }
-
-            List<ServiceInformation> result;
-            this._cts = new CancellationTokenSource();
-            
+            CancellationTokenSource cts = new CancellationTokenSource();
+            HttpResponseMessage response;
             try
             {
-                this._cts.CancelAfter(TimeSpan.FromSeconds(5));
-                result = await this._httpClient.GetFromJsonAsync<List<ServiceInformation>>("/services/information", this._cts.Token);
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await _httpClient.PostAsJsonAsync("/services", new ServiceConfigurationRequest(name, url), cts.Token);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.Created)
+                    return null;
             }
             catch (Exception)
             {
-                result = null;
+                return null;
             }
 
-            return result;
+            return await response.Content.ReadFromJsonAsync<Service>();
+        }
+
+        public async Task<bool> DeleteServiceAsync(int id)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            HttpResponseMessage response;
+            try
+            {
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await _httpClient.DeleteAsync($"/services/{id}", cts.Token);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
+                    return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<List<Service>> GetServicesAsync()
+        {
+            if (this._httpClient is null)
+            {
+                this._httpClient = new HttpClient()
+                {
+                    BaseAddress = new Uri(this._appsettingsService.GetBackendUrl())
+                };
+
+                this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
+            }
+
+            List<Service> services = null;
+            try
+            {
+                services = await this._httpClient.GetFromJsonAsync<List<Service>>("/services");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return services;
+        }
+
+        public async Task<Service> UpdateServiceAsync(string name, string url, int id)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            HttpResponseMessage response;
+            try
+            {
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await _httpClient.PutAsJsonAsync($"/services/{id}", new ServiceConfigurationRequest(name, url), cts.Token);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<Service>();
         }
     }
 }

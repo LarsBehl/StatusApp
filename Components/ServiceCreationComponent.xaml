@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
+             x:Class="StatusApp.Components.ServiceCreationComponent"
+             Title="ServiceCreationComponent"
+             BackgroundColor="White">
+    <GridLayout Padding="48"
+          ColumnDefinitions="*"
+          RowDefinitions="*,64">
+        <VerticalStackLayout>
+            <Label Text="{Binding PageTitle}"
+               HorizontalOptions="CenterAndExpand"
+               FontSize="Large"/>
+            <Frame CornerRadius="10"
+               Margin="16 0">
+                <VerticalStackLayout>
+                    <Label Text="Service Name" />
+                    <Entry x:Name="NameInput"
+                       Placeholder="Service Name"
+                       ClearButtonVisibility="WhileEditing"/>
+                    <Label Text="Invalid Name"
+                       IsVisible="{Binding HasNameError}"
+                       TextColor="Red" />
+                    <Label Text="Service URL" />
+                    <Entry x:Name="UrlInput"
+                       Placeholder="Service URL"
+                       ClearButtonVisibility="WhileEditing"/>
+                    <Label Text="Invalid Url"
+                       IsVisible="{Binding HasUrlError}"
+                       TextColor="Red" />
+                </VerticalStackLayout>
+            </Frame>
+            <ActivityIndicator IsEnabled="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"/>
+            <Label Text="There was an error configuring the service"
+                   IsVisible="{Binding HasConfigurationError}"/>
+        </VerticalStackLayout>
+        <HorizontalStackLayout GridLayout.Row="1">
+            <Button Text="Back"
+                    TextColor="{DynamicResource PrimaryColor}"
+                    BackgroundColor="{DynamicResource SecondaryColor}"
+                    Clicked="OnBackButtonPressed"
+                    IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
+            <Button Text="Submit"
+                    Clicked="OnSubmitButtonPressed"
+                    IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
+        </HorizontalStackLayout>
+    </GridLayout>
+</ContentPage>

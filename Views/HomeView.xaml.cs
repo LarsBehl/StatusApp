@@ -13,7 +13,7 @@ namespace StatusApp.Views
 {
     public partial class HomeView : ContentPage
     {
-        private readonly IServicesService _servicesService;
+        private readonly IServiceInformationService _servicesService;
         private List<ServiceInformation> _services;
         private string _message;
         private bool _isLoading = true;
@@ -53,7 +53,7 @@ namespace StatusApp.Views
         {
             InitializeComponent();
             BindingContext = this;
-            this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
+            this._servicesService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
             this.ClickButton.IsEnabled = false;
             this.GetServices().GetAwaiter().OnCompleted(this.FinishedLoading);
         }
@@ -87,7 +87,7 @@ namespace StatusApp.Views
             this.ServiceList.Clear();
             foreach (ServiceInformation service in this._services)
             {
-                this.ServiceList.Add(new ServiceComponent(service));
+                this.ServiceList.Add(new ServiceInformationComponent(service));
             }
         }
 
