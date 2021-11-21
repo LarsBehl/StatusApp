@@ -4,6 +4,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace StatusApp.Services
         private CancellationTokenSource _logoutCts;
         private System.Timers.Timer _timer;
         private JwtSecurityTokenHandler _tokenHandler;
+        private HttpClient _authorizedClient;
 
         public UserResponse CurrentUser { get; set; }
 
@@ -35,6 +37,7 @@ namespace StatusApp.Services
             this._tokenHandler = new JwtSecurityTokenHandler();
             this._httpClient = null;
             this.CurrentUser = null;
+            this._authorizedClient = null;
         }
 
         public async Task<LoginResponseType> LoginUserAsync(string username, string password)
@@ -99,6 +102,34 @@ namespace StatusApp.Services
             }
             this._tokenService.RemoveToken();
             this.CurrentUser = null;
+            this._authorizedClient = null;
+        }
+
+        public async Task<TokenCreationResponse> CreateUserCreationTokenAsync()
+        {
+            if(this._authorizedClient is null)
+            {
+                this._authorizedClient = new HttpClient();
+                this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
+                this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
+            }
+
+            HttpResponseMessage response;
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await this._httpClient.PostAsync("/users/token", null, cts.Token);
+
+                if (response.StatusCode != HttpStatusCode.Created)
+                    return null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<TokenCreationResponse>();
         }
     }
 }
