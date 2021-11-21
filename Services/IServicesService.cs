@@ -8,6 +8,7 @@ namespace StatusApp.Services
     {
         Task<List<Service>> GetServicesAsync();
         Task<Service> CreateServiceAsync(string name, string url);
-        Task<Service> UpdateServiceAsync(string name, string url);
+        Task<Service> UpdateServiceAsync(string name, string url, int id);
+        Task<bool> DeleteServiceAsync(int id);
     }
 }

@@ -31,9 +31,10 @@
                        TextColor="Red" />
                 </VerticalStackLayout>
             </Frame>
-            <ActivityIndicator IsEnabled="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+            <ActivityIndicator IsEnabled="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"/>
             <Label Text="There was an error configuring the service"
-                   IsVisible="{Binding HasConfigurationError}" />
+                   IsVisible="{Binding HasConfigurationError}"/>
         </VerticalStackLayout>
         <HorizontalStackLayout GridLayout.Row="1">
             <Button Text="Back"

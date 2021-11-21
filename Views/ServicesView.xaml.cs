@@ -15,6 +15,9 @@ namespace StatusApp.Views
 	{
 		private static readonly string GENERIC_ERROR_MSG = "There was an error fetching the services";
 		private static readonly string NO_SERVICES_MSG = "There are currently no services";
+		private const string CANCEL = "Cancel";
+		private const string EDIT = "Edit";
+		private const string DELETE = "Delete";
 
 		private readonly IServicesService _servicesService;
 
@@ -60,6 +63,7 @@ namespace StatusApp.Views
 			this.BindingContext = this;
 			this._servicesService = MauiProgram.App.Services.GetRequiredService<IServicesService>();
 
+			App.Current.ModalPopping += this.HandleModalPopping;
 			this.LoadServices().GetAwaiter().OnCompleted(() => { });
 		}
 
@@ -82,7 +86,11 @@ namespace StatusApp.Views
             }
 
 			foreach (Service service in this._services)
-				this.ServiceList.Add(new ServiceComponent(service));
+            {
+				ServiceComponent component = new ServiceComponent(service);
+				component.OnMore += this.HandleMoreCicked;
+				this.ServiceList.Add(component);
+			}
 			this.IsLoading = false;
         }
 
@@ -91,14 +99,38 @@ namespace StatusApp.Views
 		public async void CreateService(object sender, EventArgs e)
         {
 			this._serviceCreationComponent = new ServiceCreationComponent();
-			App.Current.ModalPopping += this.HandleModalPopping;
 			await this.Navigation.PushModalAsync(this._serviceCreationComponent);
+        }
+
+		public async void HandleMoreCicked(object sender, int serviceId)
+        {
+			string action = await this.DisplayActionSheet("Edit Service", CANCEL, DELETE, EDIT);
+
+			switch (action)
+            {
+				case CANCEL:
+					return;
+				case DELETE:
+					bool success = await this._servicesService.DeleteServiceAsync(serviceId);
+
+					if (!success)
+						await this.DisplayAlert("Error", "There was an issue deleting the service. Please try again later", "OK");
+					else
+						await this.LoadServices();
+					break;
+				case EDIT:
+					this._serviceCreationComponent = new ServiceCreationComponent(this._services.SingleOrDefault(s => s.Id == serviceId));
+					await this.Navigation.PushModalAsync(this._serviceCreationComponent);
+					break;
+				default:
+					return;
+            }
         }
 
 		private async void HandleModalPopping(object sender, ModalPoppingEventArgs e)
         {
 			if(e.Modal == this._serviceCreationComponent && this._serviceCreationComponent.Service != null)
-				await this.LoadServices();
+                await this.LoadServices();
         }
 	}
 }

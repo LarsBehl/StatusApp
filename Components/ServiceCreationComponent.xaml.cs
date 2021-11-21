@@ -139,13 +139,14 @@ namespace StatusApp.Components
 			if(this.Service is null)
 				this.Service = await this._servicesService.CreateServiceAsync(name, url);
 			else
-				this.Service = await this._servicesService.UpdateServiceAsync(name, url);
+				this.Service = await this._servicesService.UpdateServiceAsync(name, url, this.Service.Id);
 
 			if(this.Service is null)
 				this.HasConfigurationError = true;
 
 			this.IsLoading = false;
-			await this.Navigation.PopModalAsync();
+			if(!this.HasConfigurationError)
+				await this.Navigation.PopModalAsync();
         }
 	}
 }

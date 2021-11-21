@@ -6,7 +6,15 @@
         <Frame CornerRadius="10"
                Margin="8 0">
             <VerticalStackLayout>
-                <Label Text="{Binding Service.Name}" />
+                <HorizontalStackLayout>
+                    <Label Text="{Binding Service.Name}"
+                           FontSize="Medium"
+                           VerticalOptions="Center"/>
+                    <ImageButton Source="more_vert_black.png"
+                                 Clicked="OnMoreClicked"
+                                 HeightRequest="48"
+                                 WidthRequest="48"/>
+                </HorizontalStackLayout>
                 <Label Text="{Binding Service.Url}" />
             </VerticalStackLayout>
         </Frame>

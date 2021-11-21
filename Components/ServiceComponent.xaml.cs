@@ -1,11 +1,14 @@
 using Microsoft.Maui.Controls;
 using StatusApp.Domain.Model.DTOs;
+using System;
 
 namespace StatusApp.Components
 {
     public partial class ServiceComponent : ContentView
 	{
 		private Service _service;
+
+		public event EventHandler<int> OnMore;
 
 		public Service Service
         {
@@ -26,6 +29,12 @@ namespace StatusApp.Components
 		public ServiceComponent(Service service) : this()
         {
 			this.Service = service;
+        }
+
+		// TODO implement
+		public void OnMoreClicked(object sender, EventArgs e)
+        {
+			this.OnMore?.Invoke(this, this.Service.Id);
         }
 	}
 }
