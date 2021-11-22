@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
@@ -85,7 +86,11 @@ namespace StatusApp.Views
             }
         }
 
-        public UserFormComponent()
+        public Func<string, bool> ValidateInput { get => (value) => string.IsNullOrWhiteSpace(value); }
+
+        public Func<string, bool> ValidatePasswordConfirm { get => (value) => value == this.PasswordInput.InputText; }
+
+        public UserFormView()
         {
             InitializeComponent();
             this.BindingContext = this;
