@@ -11,9 +11,7 @@
                            FontSize="Medium"
                            VerticalOptions="Center"/>
                     <ImageButton Source="more_vert_black.png"
-                                 Clicked="OnMoreClicked"
-                                 HeightRequest="48"
-                                 WidthRequest="48"/>
+                                 Clicked="OnMoreClicked" />
                 </HorizontalStackLayout>
                 <Label Text="{Binding Service.Url}" />
             </VerticalStackLayout>

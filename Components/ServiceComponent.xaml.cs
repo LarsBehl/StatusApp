@@ -31,7 +31,6 @@ namespace StatusApp.Components
 			this.Service = service;
         }
 
-		// TODO implement
 		public void OnMoreClicked(object sender, EventArgs e)
         {
 			this.OnMore?.Invoke(this, this.Service.Id);

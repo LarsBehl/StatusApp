@@ -38,7 +38,7 @@
 
                 </VerticalStackLayout>
             </Frame>
-            <ActivityIndicator IsEnabled="{Binding IsLoading}"
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
                                IsVisible="{Binding IsLoading}" />
             <Label Text="{Binding ErrorMessage}"
                    IsVisible="{Binding HasCreationError}"/>
