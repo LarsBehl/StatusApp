@@ -1,6 +1,7 @@
 ﻿using StatusApp.Domain;
 using StatusApp.Domain.Model.DTOs;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
@@ -165,6 +166,49 @@ namespace StatusApp.Services
             }
 
             return await response.Content.ReadFromJsonAsync<UserResponse>();
+        }
+
+        public async Task<List<UserResponse>> GetUsersAsync()
+        {
+            if (this._authorizedClient is null)
+            {
+                this._authorizedClient = new HttpClient();
+                this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
+                this._authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
+            }
+
+            List<UserResponse> response;
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await this._authorizedClient.GetFromJsonAsync<List<UserResponse>>("/users", cts.Token);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return response;
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                HttpResponseMessage response = await this._authorizedClient.DeleteAsync($"/users/{id}");
+
+                if (response.StatusCode != HttpStatusCode.NoContent)
+                    return false;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

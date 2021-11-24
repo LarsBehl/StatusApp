@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
+             xmlns:c="clr-namespace:StatusApp.Components"
              x:Class="StatusApp.Views.UsersView"
              Title="UsersView"
              BackgroundColor="White">
     <ScrollView>
         <VerticalStackLayout Padding="30">
+            <Button Text="Refresh"
+                    Clicked="RefreshUsers" />
             <ImageButton HorizontalOptions="Center"
                          Source="add_black.png"
                          Clicked="CreateUserToken">
@@ -16,6 +20,14 @@
                             Opacity="0.8" />
                 </ImageButton.Shadow>
             </ImageButton>
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}" />
+            <Label IsVisible="{Binding HasLoadingError}"
+                   Text="{Binding ErrorMessage}" />
+            <VerticalStackLayout x:Name="UserList"
+                                 IsVisible="{Binding IsLoading, Converter={u:InverseBoolConverter}}">
+                <!-- Content added by code -->
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
