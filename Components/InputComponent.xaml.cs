@@ -93,6 +93,7 @@ namespace StatusApp.Components
         );
 
         public bool InputHasError { get; set; }
+        public string InputContent { get => this.InputEntry.Text; }
 
         public InputComponent()
         {
@@ -158,6 +159,12 @@ namespace StatusApp.Components
                 ShowError(inputComponent);
             else
                 HideError(inputComponent);
+        }
+
+        public void Clear()
+        {
+            this.InputEntry.Text = string.Empty;
+            this.InputHasError = false;
         }
 
         void OnFocusOut(object sender, EventArgs e)

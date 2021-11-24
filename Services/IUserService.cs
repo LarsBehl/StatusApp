@@ -11,5 +11,6 @@ namespace StatusApp.Services
         Task<LoginResponseType> LoginUserAsync(string username, string password);
         void LogoutUser();
         Task<TokenCreationResponse> CreateUserCreationTokenAsync();
+        Task<UserResponse> CreateUserAsync(string username, string password, string token);
     }
 }

@@ -28,7 +28,8 @@
                                       InputName="ConfirmPassword"
                                       InputError="Passwords do not match"
                                       InputValidation="{Binding ValidatePasswordConfirm}"
-                                      InputIsPassword="True" />
+                                      InputIsPassword="True"
+                                      x:Name="PasswordConfirmInput"/>
                     <c:InputComponent Placeholder="A7D8FF45A7D8FF45"
                                       InputName="Token"
                                       x:Name="TokenInput"
@@ -37,6 +38,10 @@
 
                 </VerticalStackLayout>
             </Frame>
+            <ActivityIndicator IsEnabled="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}" />
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasCreationError}"/>
             <HorizontalStackLayout>
                 <Button BackgroundColor="{DynamicResource SecondaryColor}"
                         TextColor="{DynamicResource PrimaryColor}"
@@ -47,10 +52,6 @@
                         Clicked="OnSubmitClicked"
                         IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
             </HorizontalStackLayout>
-            <ActivityIndicator IsEnabled="{Binding IsLoading}"
-                               IsVisible="{Binding IsLoading}" />
-            <Label Text="{Binding ErrorMessage}"
-                   IsVisible="{Binding HasCreationError}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
