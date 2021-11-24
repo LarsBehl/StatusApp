@@ -69,6 +69,9 @@
 	  <Compile Update="Views\HomeView.xaml.cs">
 	    <DependentUpon>HomeView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\UserFormView.xaml.cs">
+	    <DependentUpon>UserFormView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">

@@ -111,7 +111,7 @@ namespace StatusApp.Services
             {
                 this._authorizedClient = new HttpClient();
                 this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
-                this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
+                this._authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
             }
 
             HttpResponseMessage response;
@@ -119,7 +119,7 @@ namespace StatusApp.Services
             {
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(TimeSpan.FromSeconds(5));
-                response = await this._httpClient.PostAsync("/users/token", null, cts.Token);
+                response = await this._authorizedClient.PostAsync("/users/token", null, cts.Token);
 
                 if (response.StatusCode != HttpStatusCode.Created)
                     return null;
@@ -130,6 +130,41 @@ namespace StatusApp.Services
             }
 
             return await response.Content.ReadFromJsonAsync<TokenCreationResponse>();
+        }
+
+        public async Task<UserResponse> CreateUserAsync(string username, string password, string token)
+        {
+            if (this._httpClient is null)
+            {
+                string baseAddress = this._appsettingsService.GetBackendUrl();
+
+                if (string.IsNullOrEmpty(baseAddress))
+                    return null;
+
+                this._httpClient = new HttpClient()
+                {
+                    BaseAddress = new Uri(baseAddress)
+                };
+            }
+
+            UserCreationRequest request = new UserCreationRequest(username.Trim(), password.Trim(), token.Trim());
+
+            HttpResponseMessage response;
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                response = await this._httpClient.PostAsJsonAsync<UserCreationRequest>("/users", request, cts.Token);
+
+                if (response.StatusCode != HttpStatusCode.Created)
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<UserResponse>();
         }
     }
 }

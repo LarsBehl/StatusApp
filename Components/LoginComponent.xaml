@@ -22,10 +22,16 @@
                    TextColor="Red"
                    Text="Invalid Password"
                    IsVisible="{Binding HasPasswordError}"/>
-            <Button Text="Login"
+            <HorizontalStackLayout Margin="16 0">
+                <Button Text="Register"
+                        BackgroundColor="{DynamicResource SecondaryColor}"
+                        TextColor="{DynamicResource PrimaryColor}"
+                        IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"
+                        Clicked="OnRegisterClicked"/>
+                <Button Text="Login"
                     IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"
-                    Margin="16 0"
                     Clicked="LoginUser"/>
+            </HorizontalStackLayout>
             <Label x:Name="LoginError"
                    FontSize="Medium"
                    IsVisible="{Binding HasLoginError}"/>

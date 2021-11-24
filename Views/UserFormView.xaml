@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
+             xmlns:c="clr-namespace:StatusApp.Components"
+             x:Class="StatusApp.Views.UserFormView"
+             Title="UserFormComponent"
+             BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="30">
+            <Label Text="Create new User"
+               FontSize="Large"
+               HorizontalOptions="Center"/>
+            <Frame Margin="0,16">
+                <VerticalStackLayout>
+                    <c:InputComponent Placeholder="Username"
+                                      InputName="Username"
+                                      x:Name="UsernameInput"
+                                      InputError="Invalid username"
+                                      InputValidation="{Binding ValidateInput}" />
+                    <c:InputComponent Placeholder="Password"
+                                      InputName="Password"
+                                      x:Name="PasswordInput"
+                                      InputError="Invalid password"
+                                      InputValidation="{Binding ValidateInput}"
+                                      InputIsPassword="True" />
+                    <c:InputComponent Placeholder="Password"
+                                      InputName="ConfirmPassword"
+                                      InputError="Passwords do not match"
+                                      InputValidation="{Binding ValidatePasswordConfirm}"
+                                      InputIsPassword="True"
+                                      x:Name="PasswordConfirmInput"/>
+                    <c:InputComponent Placeholder="A7D8FF45A7D8FF45"
+                                      InputName="Token"
+                                      x:Name="TokenInput"
+                                      InputValidation="{Binding ValidateInput}"
+                                      InputError="Invalid token" />
+
+                </VerticalStackLayout>
+            </Frame>
+            <ActivityIndicator IsEnabled="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}" />
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasCreationError}"/>
+            <HorizontalStackLayout>
+                <Button BackgroundColor="{DynamicResource SecondaryColor}"
+                        TextColor="{DynamicResource PrimaryColor}"
+                        Text="Back"
+                        Clicked="OnBackClicked"
+                        IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
+                <Button Text="Submit"
+                        Clicked="OnSubmitClicked"
+                        IsEnabled="{Binding IsLoading, Converter={u:InverseBoolConverter}}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
