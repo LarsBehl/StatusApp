@@ -124,5 +124,7 @@ namespace StatusApp.Views
                 }
             }
         }
+
+		public async void UpdatePassword(object sender, EventArgs e) => await this.Navigation.PushModalAsync(new UpdatePasswordComponent());
 	}
 }

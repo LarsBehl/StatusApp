@@ -4,8 +4,7 @@
              xmlns:c="clr-namespace:StatusApp.Components"
              xmlns:u="clr-namespace:StatusApp.Util"
              x:Class="StatusApp.Views.SettingsView"
-             Title="Settings"
-             BackgroundColor="White">
+             Title="Settings">
     <ScrollView>
         <VerticalStackLayout Padding="30">
             <Label Text="General" FontSize="Large" FontAttributes="Bold" />
@@ -38,7 +37,8 @@
             </HorizontalStackLayout>
             <Frame CornerRadius="10"
                    IsVisible="{Binding IsLoggedIn, Converter={u:InverseBoolConverter}}"
-                   Margin="16 0">
+                   Margin="16 0"
+                   >
                 <c:LoginComponent OnLoginSuccess="HandleLogin" />
             </Frame>
             <Frame IsVisible="{Binding IsLoggedIn}"

@@ -16,5 +16,6 @@ namespace StatusApp.Services
         Task<UserResponse> CreateUserAsync(string username, string password, string token);
         Task<List<UserResponse>> GetUsersAsync();
         Task<bool> DeleteUserAsync(int id);
+        Task<bool> UpdatePasswordAsync(string oldPassword, string newPassword);
     }
 }

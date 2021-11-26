@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:u="clr-namespace:StatusApp.Util"
              x:Class="StatusApp.Views.ServicesView"
-             Title="Services"
-             BackgroundColor="White">
+             Title="Services">
     <ScrollView>
         <VerticalStackLayout Padding="30">
             <Button Text="Refresh"
