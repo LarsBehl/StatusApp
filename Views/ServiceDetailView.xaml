@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:u="clr-namespace:StatusApp.Util"
+             x:Class="StatusApp.Views.ServiceDetailView"
+             Title="{Binding ServiceName}">
+    <VerticalStackLayout Padding="30">
+        <Frame CornerRadius="10"
+               IsVisible="{Binding IsEmpty, Converter={u:InverseBoolConverter}}">
+            <VerticalStackLayout>
+                <Label Text="{Binding Timeseries.ServiceName}"
+                       FontSize="Large"/>
+                <HorizontalStackLayout>
+                    <Label Text="Average response time:"
+                           Margin="0 8 0 0"/>
+                    <Label Text="{Binding AvgResponseTime}" />
+                    <Label Text="ms" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Label Text="Current Status:"
+                           Margin="0 8 0 0" />
+                    <Label Text="{Binding CurrentStatus}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center"/>
+        <Label Text="{Binding Message}"
+               IsVisible="{Binding IsEmpty}"
+               HorizontalOptions="Center"/>
+    </VerticalStackLayout>
+</ContentPage>

@@ -4,6 +4,9 @@
              x:Class="StatusApp.Components.ServiceInformationComponent">
     <ContentView.Content>
         <VerticalStackLayout Padding="5">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="NavigateServiceDetailView" />
+            </VerticalStackLayout.GestureRecognizers>
             <BoxView HeightRequest="2" BackgroundColor="Grey" Margin="0, 0, 0, 5">
             </BoxView>
             <Label Text="{Binding Service.Name}" FontAttributes="Bold" FontSize="Medium" />

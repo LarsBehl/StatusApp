@@ -1,5 +1,7 @@
 using StatusApp.Domain.Model;
 using StatusApp.Domain.Model.DTOs;
+using StatusApp.Views;
+using System;
 
 namespace StatusApp.Components
 {
@@ -26,6 +28,11 @@ namespace StatusApp.Components
         public ServiceInformationComponent(ServiceInformation service) : this()
         {
             this.Service = service;
+        }
+
+        async void NavigateServiceDetailView(object sender, EventArgs e)
+        {
+            await this.Navigation.PushAsync(new ServiceDetailView(this.Service.Id));
         }
     }
 }
