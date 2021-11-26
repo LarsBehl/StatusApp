@@ -12,5 +12,6 @@ namespace StatusApp.Services
         /// </summary>
         /// <returns>List of services if response was received from server, null otherwise</returns>
         Task<List<ServiceInformation>> GetServiceInformation();
+        Task<ServiceInformationTimeseriesResponse> GetServiceTimeseriesAsync(int id);
     }
 }

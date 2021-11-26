@@ -52,5 +52,19 @@ namespace StatusApp.Services
 
             return result;
         }
+
+        public async Task<ServiceInformationTimeseriesResponse> GetServiceTimeseriesAsync(int id)
+        {
+            try
+            {
+                this._cts = new CancellationTokenSource();
+                this._cts.CancelAfter(TimeSpan.FromSeconds(5));
+                return await this._httpClient.GetFromJsonAsync<ServiceInformationTimeseriesResponse>($"/services/information/{id}/timeseries", this._cts.Token);
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+        }
     }
 }
