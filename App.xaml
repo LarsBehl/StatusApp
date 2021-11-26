@@ -27,7 +27,6 @@
                 <Setter Property="HeightRequest" Value="48" />
                 <Setter Property="CornerRadius" Value="24" />
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

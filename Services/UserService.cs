@@ -1,5 +1,6 @@
 ﻿using StatusApp.Domain;
 using StatusApp.Domain.Model.DTOs;
+using StatusApp.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -45,15 +46,14 @@ namespace StatusApp.Services
         {
             if(this._httpClient is null)
             {
-                string baseAddress = this._appsettingsService.GetBackendUrl();
-
-                if (string.IsNullOrEmpty(baseAddress))
-                    return LoginResponseType.ServiceUnavailable;
-
-                this._httpClient = new HttpClient()
+                try
                 {
-                    BaseAddress = new Uri(baseAddress)
-                };
+                    this.CreateClient();
+                }
+                catch (ArgumentException)
+                {
+                    return LoginResponseType.ServiceUnavailable;
+                }
             }
 
             this._cts = new CancellationTokenSource();
@@ -108,13 +108,6 @@ namespace StatusApp.Services
 
         public async Task<TokenCreationResponse> CreateUserCreationTokenAsync()
         {
-            if(this._authorizedClient is null)
-            {
-                this._authorizedClient = new HttpClient();
-                this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
-                this._authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
-            }
-
             HttpResponseMessage response;
             try
             {
@@ -137,15 +130,14 @@ namespace StatusApp.Services
         {
             if (this._httpClient is null)
             {
-                string baseAddress = this._appsettingsService.GetBackendUrl();
-
-                if (string.IsNullOrEmpty(baseAddress))
-                    return null;
-
-                this._httpClient = new HttpClient()
+                try
                 {
-                    BaseAddress = new Uri(baseAddress)
-                };
+                    this.CreateClient();
+                }
+                catch(ArgumentException)
+                {
+                    return null;
+                }
             }
 
             UserCreationRequest request = new UserCreationRequest(username.Trim(), password.Trim(), token.Trim());
@@ -171,11 +163,7 @@ namespace StatusApp.Services
         public async Task<List<UserResponse>> GetUsersAsync()
         {
             if (this._authorizedClient is null)
-            {
-                this._authorizedClient = new HttpClient();
-                this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
-                this._authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
-            }
+                await this.CreateAuthorizedClientAsync();
 
             List<UserResponse> response;
             try
@@ -209,6 +197,57 @@ namespace StatusApp.Services
             }
 
             return true;
+        }
+
+        public async Task<bool> UpdatePasswordAsync(string oldPassword, string newPassword)
+        {
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+                HttpResponseMessage response = await this._authorizedClient.PutAsJsonAsync<PasswordUpdateRequest>($"/users/{this.CurrentUser.Id}", new PasswordUpdateRequest(oldPassword, newPassword), cts.Token);
+
+                ErrorResponse error;
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NoContent: break;
+                    case HttpStatusCode.BadRequest:
+                        error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                        throw new PasswordTooShortException(error);
+                    case HttpStatusCode.Unauthorized:
+                        error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                        throw new WrongPasswordException(error);
+                    default:
+                        return false;
+                }
+
+            }
+            catch(Exception e) when (e is not ErrorResponseException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task CreateAuthorizedClientAsync()
+        {
+            this._authorizedClient = new HttpClient();
+            this._authorizedClient.BaseAddress = new Uri(this._appsettingsService.GetBackendUrl());
+            this._authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await this._tokenService.LoadTokenAsync());
+        }
+
+        private void CreateClient()
+        {
+            string baseAddress = this._appsettingsService.GetBackendUrl();
+
+            if (string.IsNullOrEmpty(baseAddress))
+                throw new ArgumentException();
+
+            this._httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(baseAddress)
+            };
         }
     }
 }

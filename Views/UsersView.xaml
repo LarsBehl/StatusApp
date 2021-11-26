@@ -4,12 +4,14 @@
              xmlns:u="clr-namespace:StatusApp.Util"
              xmlns:c="clr-namespace:StatusApp.Components"
              x:Class="StatusApp.Views.UsersView"
-             Title="UsersView"
-             BackgroundColor="White">
+             Title="Users">
     <ScrollView>
         <VerticalStackLayout Padding="30">
+            <Button Text="Update Password"
+                    Clicked="UpdatePassword"/>
             <Button Text="Refresh"
-                    Clicked="RefreshUsers" />
+                    Clicked="RefreshUsers"
+                    Margin="16 0" />
             <ImageButton HorizontalOptions="Center"
                          Source="add_black.png"
                          Clicked="CreateUserToken">

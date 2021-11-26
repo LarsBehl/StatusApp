@@ -4,8 +4,7 @@
              xmlns:u="clr-namespace:StatusApp.Util"
              xmlns:c="clr-namespace:StatusApp.Components"
              x:Class="StatusApp.Views.UserFormView"
-             Title="UserFormComponent"
-             BackgroundColor="White">
+             Title="UserFormComponent">
     <ScrollView>
         <VerticalStackLayout Padding="30">
             <Label Text="Create new User"
@@ -25,7 +24,7 @@
                                       InputValidation="{Binding ValidateInput}"
                                       InputIsPassword="True" />
                     <c:InputComponent Placeholder="Password"
-                                      InputName="ConfirmPassword"
+                                      InputName="Confirm Password"
                                       InputError="Passwords do not match"
                                       InputValidation="{Binding ValidatePasswordConfirm}"
                                       InputIsPassword="True"
