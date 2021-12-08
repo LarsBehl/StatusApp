@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,132 +8,155 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using StatusApp.Domain.Model.DTOs;
+using StatusApp.Domain.Model.Local;
 using StatusApp.Extensions;
 using StatusApp.Services;
 
 namespace StatusApp.Views
 {
-	public partial class ServiceDetailView : ContentPage
-	{
-		private static readonly string EMPTY_MSG = "No information have been querried yet";
-		private static readonly string GENERIC_ERROR_MSG = "There was an issue retrieving the data";
+    public partial class ServiceDetailView : ContentPage
+    {
+        private static readonly string EMPTY_MSG = "No information have been querried yet";
+        private static readonly string GENERIC_ERROR_MSG = "There was an issue retrieving the data";
 
-		private readonly IServiceInformationService _serviceInformationService;
-		
-		private int _serviceId;
-		private ServiceInformationTimeseriesResponse _timeseries;
-		private bool _isLoading;
-		private string _message;
-		private bool _isEmpty;
-		private double _avgRespnseTime;
-		private string _serviceName;
-		private HttpStatusCode _currentStatus;
+        private readonly IServiceInformationService _serviceInformationService;
 
-		public ServiceInformationTimeseriesResponse Timeseries
+        private int _serviceId;
+        private ServiceInformationTimeseriesResponse _timeseries;
+        private bool _isLoading;
+        private string _message;
+        private bool _isEmpty;
+        private double _avgRespnseTime;
+        private string _serviceName;
+        private HttpStatusCode _currentStatus;
+        private List<DataPoint> _dataPoints;
+
+        public ServiceInformationTimeseriesResponse Timeseries
         {
-			get => this._timeseries;
-			set
+            get => this._timeseries;
+            set
             {
-				this._timeseries = value;
-				this.OnPropertyChanged(nameof(this.Timeseries));
+                this._timeseries = value;
+                this.OnPropertyChanged(nameof(this.Timeseries));
             }
         }
 
-		public bool IsLoading
+        public bool IsLoading
         {
-			get => this._isLoading;
-			set
+            get => this._isLoading;
+            set
             {
-				this._isLoading = value;
-				this.OnPropertyChanged(nameof(this.IsLoading));
+                this._isLoading = value;
+                this.OnPropertyChanged(nameof(this.IsLoading));
             }
         }
 
-		public string Message
+        public string Message
         {
-			get => this._message;
-			set
+            get => this._message;
+            set
             {
-				this._message = value;
-				this.OnPropertyChanged(nameof(this.Message));
+                this._message = value;
+                this.OnPropertyChanged(nameof(this.Message));
             }
         }
 
-		public bool IsEmpty
+        public bool IsEmpty
         {
-			get => this._isEmpty;
-			set
+            get => this._isEmpty;
+            set
             {
-				this._isEmpty = value;
-				this.OnPropertyChanged(nameof(this.IsEmpty));
+                this._isEmpty = value;
+                this.OnPropertyChanged(nameof(this.IsEmpty));
             }
         }
 
-		public double AvgResponseTime
+        public double AvgResponseTime
         {
-			get => this._avgRespnseTime;
-			set
+            get => this._avgRespnseTime;
+            set
             {
-				this._avgRespnseTime = value;
-				this.OnPropertyChanged(nameof(this.AvgResponseTime));
+                this._avgRespnseTime = value;
+                this.OnPropertyChanged(nameof(this.AvgResponseTime));
             }
         }
 
-		public string ServiceName
+        public string ServiceName
         {
-			get => this._serviceName;
-			set
+            get => this._serviceName;
+            set
             {
-				this._serviceName = value;
-				this.OnPropertyChanged(nameof(this.ServiceName));
+                this._serviceName = value;
+                this.OnPropertyChanged(nameof(this.ServiceName));
             }
         }
 
-		public HttpStatusCode CurrentStatus
+        public HttpStatusCode CurrentStatus
         {
-			get => this._currentStatus;
-			set
+            get => this._currentStatus;
+            set
             {
-				this._currentStatus = value;
-				this.OnPropertyChanged(nameof(this.CurrentStatus));
+                this._currentStatus = value;
+                this.OnPropertyChanged(nameof(this.CurrentStatus));
             }
         }
 
-		public ServiceDetailView(int serviceId)
-		{
-			InitializeComponent();
-			this.BindingContext = this;
-			this._serviceId = serviceId;
-			this._serviceInformationService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
-			this.IsEmpty = true;
-
-			this.LoadTimeseries().GetAwaiter().OnCompleted(() => { });
-		}
-
-		private async Task LoadTimeseries()
+        public List<DataPoint> DataPoints
         {
-			this.IsLoading = true;
-			this.Timeseries = await this._serviceInformationService.GetServiceTimeseriesAsync(this._serviceId);
-
-			if (this.Timeseries is null)
-			{
-				this.IsEmpty = true;
-				this.Message = GENERIC_ERROR_MSG;
-				this.ServiceName = string.Empty;
-			}
-			else if (this.Timeseries.Data.IsEmtpy())
-			{
-				this.IsEmpty = true;
-				this.Message = EMPTY_MSG;
-			}
-			else
-				this.IsEmpty = false;
-
-			this.ServiceName = this.Timeseries?.ServiceName;
-
-			this.AvgResponseTime = Math.Round(this._timeseries?.Data.Average(d => d.ResponseTime) ?? 0, 2);
-			this.CurrentStatus = this._timeseries?.Data.Last().StatusCode ?? HttpStatusCode.Unused;
-			this.IsLoading = false;
+            get => this._dataPoints;
+            set
+            {
+                this._dataPoints = value;
+                this.OnPropertyChanged(nameof(this.DataPoints));
+            }
         }
-	}
+
+        public ServiceDetailView(int serviceId)
+        {
+            InitializeComponent();
+            this.BindingContext = this;
+            this._serviceId = serviceId;
+            this._serviceInformationService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
+            this.IsEmpty = true;
+
+            this.LoadTimeseries().GetAwaiter().OnCompleted(this.CreateDatapointsFromTimeseries);
+        }
+
+        private async Task LoadTimeseries()
+        {
+            this.IsLoading = true;
+            this.Timeseries = await this._serviceInformationService.GetServiceTimeseriesAsync(this._serviceId);
+
+            if (this.Timeseries is null)
+            {
+                this.IsEmpty = true;
+                this.Message = GENERIC_ERROR_MSG;
+                this.ServiceName = string.Empty;
+            }
+            else if (this.Timeseries.Data.IsEmtpy())
+            {
+                this.IsEmpty = true;
+                this.Message = EMPTY_MSG;
+            }
+            else
+                this.IsEmpty = false;
+
+            this.ServiceName = this.Timeseries?.ServiceName;
+
+            this.AvgResponseTime = Math.Round(this._timeseries?.Data.Average(d => d.ResponseTime) ?? 0, 2);
+            this.CurrentStatus = this._timeseries?.Data.First().StatusCode ?? HttpStatusCode.Unused;
+            this.IsLoading = false;
+        }
+
+        private void CreateDatapointsFromTimeseries()
+        {
+            if (this.Timeseries.Data.Count < 2)
+                return;
+            List<DataPoint> result = new List<DataPoint>();
+            foreach (TimeseriesEntry entry in this.Timeseries.Data)
+                result.Add(new DataPoint(((int)entry.ResponseTime), "ms", entry.RequestedAt.ToString("HH:mm:ss")));
+
+            this.DataPoints = result;
+        }
+    }
 }
