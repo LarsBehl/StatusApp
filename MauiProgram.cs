@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using StatusApp.Services;
 
 namespace StatusApp
@@ -14,7 +15,9 @@ namespace StatusApp
         {
             var builder = MauiApp.CreateBuilder();
             builder.Host.ConfigureServices(ConfigureServices);
-            builder.UseMauiApp<App>()
+            builder
+                .UseSkiaSharp(true)
+                .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

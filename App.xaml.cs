@@ -12,6 +12,8 @@ namespace StatusApp
 		public App()
 		{
 			InitializeComponent();
+			// hardcode light theme until styling is adjusted to work with dark theme
+			App.Current.UserAppTheme = OSAppTheme.Light;
 
 			MainPage = new SideNav();
 		}
