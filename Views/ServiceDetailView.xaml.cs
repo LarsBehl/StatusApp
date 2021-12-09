@@ -29,7 +29,7 @@ namespace StatusApp.Views
         private double _avgRespnseTime;
         private string _serviceName;
         private HttpStatusCode _currentStatus;
-        private List<DataPoint> _dataPoints;
+        private GraphData _graphData;
 
         public ServiceInformationTimeseriesResponse Timeseries
         {
@@ -101,16 +101,15 @@ namespace StatusApp.Views
             }
         }
 
-        public List<DataPoint> DataPoints
+        public GraphData GraphData
         {
-            get => this._dataPoints;
+            get => this._graphData;
             set
             {
-                this._dataPoints = value;
-                this.OnPropertyChanged(nameof(this.DataPoints));
+                this._graphData = value;
+                this.OnPropertyChanged(nameof(this.GraphData));
             }
         }
-
         public ServiceDetailView(int serviceId)
         {
             InitializeComponent();
@@ -119,7 +118,7 @@ namespace StatusApp.Views
             this._serviceInformationService = MauiProgram.App.Services.GetRequiredService<IServiceInformationService>();
             this.IsEmpty = true;
 
-            this.LoadTimeseries().GetAwaiter().OnCompleted(this.CreateDatapointsFromTimeseries);
+            this.LoadTimeseries();
         }
 
         private async Task LoadTimeseries()
@@ -146,17 +145,20 @@ namespace StatusApp.Views
             this.AvgResponseTime = Math.Round(this._timeseries?.Data.Average(d => d.ResponseTime) ?? 0, 2);
             this.CurrentStatus = this._timeseries?.Data.First().StatusCode ?? HttpStatusCode.Unused;
             this.IsLoading = false;
+            this.CreateDatapointsFromTimeseries();
         }
 
         private void CreateDatapointsFromTimeseries()
         {
             if (this.Timeseries.Data.Count < 2)
                 return;
+            // take a maximum of 15 data points
+            IEnumerable<TimeseriesEntry> entries = this.Timeseries.Data.Take(Math.Min(15, this.Timeseries.Data.Count)).Reverse();
             List<DataPoint> result = new List<DataPoint>();
-            foreach (TimeseriesEntry entry in this.Timeseries.Data)
-                result.Add(new DataPoint(((int)entry.ResponseTime), "ms", entry.RequestedAt.ToString("HH:mm:ss")));
+            foreach (TimeseriesEntry entry in entries)
+                result.Add(new DataPoint(((int)entry.ResponseTime), entry.RequestedAt.ToString("HH:mm")));
 
-            this.DataPoints = result;
+            this.GraphData = new GraphData(result, "ms");
         }
     }
 }

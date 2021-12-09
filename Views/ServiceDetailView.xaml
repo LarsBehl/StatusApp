@@ -34,7 +34,7 @@
                HorizontalOptions="Center"/>
         </VerticalStackLayout>
         <c:LineGraphComponent GridLayout.Row="1"
-                              DataPoints="{Binding DataPoints}"
-                              ShowAnimation="True"/>
+                              GraphData="{Binding GraphData}"
+                              ShowAnimation="False"/>
     </GridLayout>
 </ContentPage>
