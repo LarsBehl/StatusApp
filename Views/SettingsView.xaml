@@ -45,28 +45,15 @@
                    CornerRadius="10"
                    Margin="16 0">
                 <VerticalStackLayout>
-                    <HorizontalStackLayout>
-                        <HorizontalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="NavigateServicesView" />
-                        </HorizontalStackLayout.GestureRecognizers>
-                        <Label Text="Services"
-                               FontSize="Medium" 
-                               VerticalOptions="Center"/>
-                        <Image Source="chevron_right_black.png" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
+                    <c:MenuEntryComponent MenuEntryText="Services"
+                                          MenuEntryIcon="chevron_right_black.png"
+                                          Clicked="NavigateServicesView" />
                     <BoxView HeightRequest="2"
                              BackgroundColor="#DBDBDB"
                              Margin="0,8" />
-                    <HorizontalStackLayout>
-                        <HorizontalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="NavigateUsersView" />
-                        </HorizontalStackLayout.GestureRecognizers>
-                        <Label Text="Users"
-                               FontSize="Medium"
-                               VerticalOptions="Center" />
-                        <Image Source="chevron_right_black.png"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                    <c:MenuEntryComponent MenuEntryText="Users"
+                                          MenuEntryIcon="chevron_right_black.png"
+                                          Clicked="NavigateUsersView" />
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>
