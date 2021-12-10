@@ -17,10 +17,7 @@ namespace StatusApp.Domain.Model.Local
             this.ResponseCode = responseCode;
         }
 
-        public override string[] GetDescription()
-        {
-            return new string[] { $"Response time: {this.RawValue.ToString("F2")}ms", $"Requested at: {this.RequestedAt.ToLocalTime()}", $"Response: {this.ResponseCode}" };
-        }
+        public override string[] GetDescription() => new string[] { $"Response time: {this.RawValue.ToString("F2")}ms", $"Requested at: {this.RequestedAt.ToLocalTime()}", $"Response: {this.ResponseCode}" };
 
         public override string GetXLabel() => this.RequestedAt.ToString("HH:mm");
 
