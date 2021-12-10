@@ -13,6 +13,6 @@ namespace StatusApp.Domain.Model.Local
 
         public abstract string GetXLabel();
         public abstract string GetYLabel(int scale = 1);
-        public abstract string GetDescription();
+        public abstract string[] GetDescription();
     }
 }

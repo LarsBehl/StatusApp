@@ -25,6 +25,10 @@ namespace StatusApp.Components
         private static readonly int LABEL_STRING_X_OFFSET = 5;
         private static readonly int LABEL_STRING_Y_OFFSET = 3;
         private static readonly int TEXT_SIZE = 12;
+        private static readonly int TOUCH_POINT_RADIUS = 15;
+        private static readonly int FLOATING_LABEL_BORDER_WIDTH = 2;
+        private static readonly int TRIANGLE_BASE_WIDTH = 10;
+        private static readonly int FLOATING_LABEL_OFFSET = 15;
         #endregion
 
         #region private fields
@@ -35,10 +39,13 @@ namespace StatusApp.Components
         private SKPaint _axisPaint;
         private SKPaint _xLabelPaint;
         private SKPaint _yLabelPaint;
+        private SKPaint _floatingLabelBackgroundPaint;
+        private SKPaint _floatingLabelBorderPaint;
         private bool _isInitialized;
         private DisplayRotation _rotation;
         private Stopwatch _stopwatch;
         private bool _animationDone;
+        private int _touchedPointIndex;
         #endregion
 
         #region bindable properties
@@ -80,7 +87,7 @@ namespace StatusApp.Components
             {
                 Color = SKColors.Black,
                 IsAntialias = true,
-                Style = SKPaintStyle.StrokeAndFill
+                Style = SKPaintStyle.Fill
             };
 
             this._axisPaint = new SKPaint()
@@ -108,9 +115,25 @@ namespace StatusApp.Components
                 TextSize = TEXT_SIZE
             };
 
+            this._floatingLabelBorderPaint = new SKPaint()
+            {
+                Color = SKColors.Gray,
+                IsAntialias = true,
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = FLOATING_LABEL_BORDER_WIDTH
+            };
+
+            this._floatingLabelBackgroundPaint = new SKPaint()
+            {
+                Color = SKColors.White,
+                IsAntialias = true,
+                Style = SKPaintStyle.StrokeAndFill,
+                StrokeWidth = FLOATING_LABEL_BORDER_WIDTH
+            };
 
             this._isInitialized = false;
             this._animationDone = false;
+            this._touchedPointIndex = -1;
             this._stopwatch = new Stopwatch();
 # if __MOBILE__
             this._rotation = DeviceDisplay.MainDisplayInfo.Rotation;
@@ -165,9 +188,35 @@ namespace StatusApp.Components
             this.DrawAxis(canvas);
             this.DrawAxisLabels(canvas);
 
+            if (this._touchedPointIndex >= 0)
+                this.DrawFloatingLabel(canvas);
+
             if (!this._animationDone && this.ShowAnimation)
                 this.Animate();
 
+        }
+
+        void OnTouch(object sender, SKTouchEventArgs e)
+        {
+            if (!e.InContact)
+                return;
+
+            SKPoint touchPoint = e.Location;
+
+            // check if the touch location is within touch target of a datapoint
+            for (int i = 0; i < this._drawnPoints.Length; i++)
+            {
+                if (SKPoint.Distance(this._drawnPoints[i], touchPoint) <= TOUCH_POINT_RADIUS)
+                {
+                    this._touchedPointIndex = i;
+                    this.SkiaView.InvalidateSurface();
+                    return;
+                }
+            }
+
+            // reset if tapped somewhere else in the graph
+            this._touchedPointIndex = -1;
+            this.SkiaView.InvalidateSurface();
         }
         #endregion
 
@@ -218,7 +267,7 @@ namespace StatusApp.Components
                     maxHeightIndex = i;
                 }
 
-                if(i % 2 == 0)
+                if (i % 2 == 0)
                 {
                     canvas.DrawRect(this._drawnPoints[i].X - (AXIS_WIDTH / 2f), yStart, AXIS_WIDTH, LABEL_LENGTH, this._axisPaint);
                     canvas.DrawText(this.GraphData[i].GetXLabel(), this._drawnPoints[i].X, yStart + TEXT_SIZE + LABEL_STRING_Y_OFFSET + LABEL_LENGTH, this._xLabelPaint);
@@ -232,6 +281,76 @@ namespace StatusApp.Components
             canvas.DrawText(this.GraphData[maxHeightIndex].GetYLabel(), HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, maxHeight + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
             canvas.DrawRect(xStartPosition, halfYPos, LABEL_LENGTH, AXIS_WIDTH, this._axisPaint);
             canvas.DrawText(this.GraphData[maxHeightIndex].GetYLabel(2), HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, halfYPos + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
+        }
+
+        private void DrawFloatingLabel(SKCanvas canvas)
+        {
+            SKPoint touchedPoint = this._drawnPoints[this._touchedPointIndex];
+            AbstractDataPoint touchedDataPoint = this.GraphData[this._touchedPointIndex];
+            string[] description = touchedDataPoint.GetDescription();
+            float maxTextWidth = float.MinValue;
+
+            // search for the maximum text width
+            foreach (string s in description)
+            {
+                float textWidth = this._xLabelPaint.MeasureText(s);
+                if (textWidth > maxTextWidth)
+                    maxTextWidth = textWidth;
+            }
+
+            float rectHeight = description.Length * TEXT_SIZE + (description.Length + 1) * LABEL_STRING_Y_OFFSET;
+            float rectWidth = maxTextWidth + 2 * LABEL_STRING_X_OFFSET;
+            float rectYStart = touchedPoint.Y - FLOATING_LABEL_OFFSET - rectHeight;
+            float rectXStart = touchedPoint.X - (rectWidth / 2);
+            bool isAbove = true;
+
+            if (rectYStart < 0)
+            {
+                rectYStart = touchedPoint.Y + FLOATING_LABEL_OFFSET;
+                isAbove = false;
+            }
+            float rectYEnd = rectYStart + rectHeight;
+
+            if (rectXStart < 0)
+                rectXStart = 0 + LABEL_STRING_X_OFFSET;
+
+            if (rectXStart + rectWidth > this.SkiaView.CanvasSize.Width)
+                rectXStart = this.SkiaView.CanvasSize.Width - rectWidth - LABEL_STRING_X_OFFSET;
+
+            float rectXEnd = rectXStart + rectWidth;            
+
+            // draw the rounded rect
+            SKRect rect = new SKRect(rectXStart, rectYStart, rectXEnd, rectYEnd);
+            using (SKRoundRect rrect = new SKRoundRect(rect, 5))
+            {
+                canvas.DrawRoundRect(rrect, this._floatingLabelBackgroundPaint);
+                canvas.DrawRoundRect(rrect, this._floatingLabelBorderPaint);
+            }
+
+            // draw a triangle indicating for which point the label is
+            float halfBaseWidth = TRIANGLE_BASE_WIDTH / 2f;
+            float triangleYPos = isAbove ? rectYEnd : rectYStart;
+            float triangleTipYPos = isAbove ? touchedPoint.Y - CIRCLE_RADIUS - FLOATING_LABEL_BORDER_WIDTH : touchedPoint.Y + CIRCLE_RADIUS + FLOATING_LABEL_BORDER_WIDTH;
+            using (SKPath path = new SKPath())
+            {
+                path.MoveTo((touchedPoint.X - halfBaseWidth).Clamp(rectXStart + TRIANGLE_BASE_WIDTH, rectXEnd - 2 * TRIANGLE_BASE_WIDTH) + 1, triangleYPos);
+                path.LineTo(touchedPoint.X, triangleTipYPos);
+                path.LineTo((touchedPoint.X + halfBaseWidth).Clamp(rectXStart + 2 * TRIANGLE_BASE_WIDTH, rectXEnd - TRIANGLE_BASE_WIDTH) - 1, triangleYPos);
+                path.Close();
+                canvas.DrawPath(path, this._floatingLabelBackgroundPaint);
+            }
+
+            using (SKPath path = new SKPath())
+            {
+                path.MoveTo((touchedPoint.X - halfBaseWidth).Clamp(rectXStart + TRIANGLE_BASE_WIDTH, rectXEnd - 2 * TRIANGLE_BASE_WIDTH), triangleYPos);
+                path.LineTo(touchedPoint.X, triangleTipYPos);
+                path.LineTo((touchedPoint.X + halfBaseWidth).Clamp(rectXStart + 2 * TRIANGLE_BASE_WIDTH, rectXEnd - TRIANGLE_BASE_WIDTH), triangleYPos);
+                canvas.DrawPath(path, this._floatingLabelBorderPaint);
+            }
+
+            // draw the text
+            for (int i = 0; i < description.Length; i++)
+                canvas.DrawText(description[i], rectXStart + rectWidth / 2, rectYStart + (i + 1) * LABEL_STRING_Y_OFFSET + (i + 1) * TEXT_SIZE, this._xLabelPaint);
         }
 
         private void Animate()
@@ -332,9 +451,9 @@ namespace StatusApp.Components
             component._points = new SKPoint[component.GraphData.Count];
             component._drawnPoints = new SKPoint[component._points.Length];
 
-            if(component._isInitialized)
+            if (component._isInitialized)
             {
-                component._isInitialized =false;
+                component._isInitialized = false;
                 component._animationDone = false;
                 component._stopwatch.Reset();
             }
