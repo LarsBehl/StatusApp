@@ -44,14 +44,14 @@ namespace StatusApp.Components
         #region bindable properties
         public static readonly BindableProperty GraphDataProperty = BindableProperty.Create(
             propertyName: nameof(GraphData),
-            returnType: typeof(GraphData),
+            returnType: typeof(List<AbstractDataPoint>),
             declaringType: typeof(LineGraphComponent),
             defaultBindingMode: BindingMode.OneWay,
             defaultValue: default,
             propertyChanged: GraphDataChanged
         );
 
-        public GraphData GraphData { get; set; }
+        public List<AbstractDataPoint> GraphData { get; set; }
 
         public static readonly BindableProperty ShowAnimationProperty = BindableProperty.Create(
             propertyName: nameof(ShowAnimation),
@@ -141,6 +141,8 @@ namespace StatusApp.Components
 
             if (!this._isInitialized)
             {
+                if (this.GraphData is null)
+                    return;
                 this.TransformDataPoints();
                 this._isInitialized = true;
 
@@ -219,18 +221,17 @@ namespace StatusApp.Components
                 if(i % 2 == 0)
                 {
                     canvas.DrawRect(this._drawnPoints[i].X - (AXIS_WIDTH / 2f), yStart, AXIS_WIDTH, LABEL_LENGTH, this._axisPaint);
-                    canvas.DrawText(this.GraphData.DataPoints[i].Label, this._drawnPoints[i].X, yStart + TEXT_SIZE + LABEL_STRING_Y_OFFSET + LABEL_LENGTH, this._xLabelPaint);
+                    canvas.DrawText(this.GraphData[i].GetXLabel(), this._drawnPoints[i].X, yStart + TEXT_SIZE + LABEL_STRING_Y_OFFSET + LABEL_LENGTH, this._xLabelPaint);
                 }
             }
 
             float xStartPosition = HORIZONTAL_OFFSET - LABEL_LENGTH;
-            int maxValue = this.GraphData.DataPoints[maxHeightIndex].Value;
             float halfYPos = this.SkiaView.CanvasSize.Height / 2;
 
             canvas.DrawRect(xStartPosition, maxHeight, LABEL_LENGTH, AXIS_WIDTH, this._axisPaint);
-            canvas.DrawText($"{maxValue}{this.GraphData.Unit}", HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, maxHeight + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
+            canvas.DrawText(this.GraphData[maxHeightIndex].GetYLabel(), HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, maxHeight + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
             canvas.DrawRect(xStartPosition, halfYPos, LABEL_LENGTH, AXIS_WIDTH, this._axisPaint);
-            canvas.DrawText($"{(maxValue / 2)}{this.GraphData.Unit}", HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, halfYPos + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
+            canvas.DrawText(this.GraphData[maxHeightIndex].GetYLabel(2), HORIZONTAL_OFFSET - LABEL_STRING_X_OFFSET, halfYPos + TEXT_SIZE + LABEL_STRING_Y_OFFSET, this._yLabelPaint);
         }
 
         private void Animate()
@@ -298,13 +299,15 @@ namespace StatusApp.Components
 
         private void TransformDataPoints()
         {
-            int maxValue = this.GraphData.DataPoints.Max(dp => dp.Value);
+            if (this.GraphData is null)
+                return;
+            int maxValue = this.GraphData.Max(dp => dp.Value);
             float canvasHeight = this.SkiaView.CanvasSize.Height - 2 * VERTICAL_OFFSET;
-            float horizontalStepSize = (this.SkiaView.CanvasSize.Width - 2 * HORIZONTAL_OFFSET) / (this.GraphData.DataPoints.Count - 1);
+            float horizontalStepSize = (this.SkiaView.CanvasSize.Width - 2 * HORIZONTAL_OFFSET) / (this.GraphData.Count - 1);
 
-            for (int i = 0; i < this.GraphData.DataPoints.Count; i++)
+            for (int i = 0; i < this.GraphData.Count; i++)
             {
-                float verticalPercentile = this.GraphData.DataPoints[i].Value / (float)maxValue;
+                float verticalPercentile = this.GraphData[i].Value / (float)maxValue;
                 this._points[i] = new SKPoint(HORIZONTAL_OFFSET + i * horizontalStepSize, this.SkiaView.CanvasSize.Height - (canvasHeight * verticalPercentile) - VERTICAL_OFFSET);
             }
         }
@@ -325,8 +328,8 @@ namespace StatusApp.Components
             if (newValue is null)
                 return;
 
-            component.GraphData = newValue as GraphData;
-            component._points = new SKPoint[component.GraphData.DataPoints.Count];
+            component.GraphData = newValue as List<AbstractDataPoint>;
+            component._points = new SKPoint[component.GraphData.Count];
             component._drawnPoints = new SKPoint[component._points.Length];
 
             if(component._isInitialized)
