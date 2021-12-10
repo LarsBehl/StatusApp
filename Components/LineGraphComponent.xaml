@@ -5,5 +5,7 @@
              x:Class="StatusApp.Components.LineGraphComponent">
     <skia:SKCanvasView PaintSurface="OnCanvasViewPaint"
                        IgnorePixelScaling="True"
+                       EnableTouchEvents="True"
+                       Touch="OnTouch"
                        x:Name="SkiaView" />
 </ContentView>

@@ -29,7 +29,7 @@ namespace StatusApp.Views
         private double _avgRespnseTime;
         private string _serviceName;
         private HttpStatusCode _currentStatus;
-        private GraphData _graphData;
+        private List<AbstractDataPoint> _graphData;
 
         public ServiceInformationTimeseriesResponse Timeseries
         {
@@ -101,7 +101,7 @@ namespace StatusApp.Views
             }
         }
 
-        public GraphData GraphData
+        public List<AbstractDataPoint> GraphData
         {
             get => this._graphData;
             set
@@ -154,11 +154,11 @@ namespace StatusApp.Views
                 return;
             // take a maximum of 15 data points
             IEnumerable<TimeseriesEntry> entries = this.Timeseries.Data.Take(Math.Min(15, this.Timeseries.Data.Count)).Reverse();
-            List<DataPoint> result = new List<DataPoint>();
+            List<AbstractDataPoint> result = new List<AbstractDataPoint>();
             foreach (TimeseriesEntry entry in entries)
-                result.Add(new DataPoint(((int)entry.ResponseTime), entry.RequestedAt.ToString("HH:mm")));
+                result.Add(new DataPoint(entry.ResponseTime, entry.RequestedAt, entry.StatusCode));
 
-            this.GraphData = new GraphData(result, "ms");
+            this.GraphData = result;
         }
     }
 }

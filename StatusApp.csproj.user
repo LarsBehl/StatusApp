@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
-    <ActiveDebugFramework>net6.0-android</ActiveDebugFramework>
+    <ActiveDebugFramework>net6.0-windows10.0.19041</ActiveDebugFramework>
     <ActiveDebugProfile>Pixel 5 - API 30 (Android 11.0 - API 30)</ActiveDebugProfile>
     <SelectedDevice>pixel_5_-_api_30</SelectedDevice>
     <DefaultDevice>pixel_5_-_api_30</DefaultDevice>

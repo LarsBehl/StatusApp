@@ -1,20 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace StatusApp.Domain.Model.Local
 {
-    public class DataPoint
+    public class DataPoint : AbstractDataPoint
     {
-        public int Value { get; set; }
-        public string Label { get; set; }
+        public override int Value => (int) this.RawValue;
+        public override double RawValue { get; set; }
+        public DateTime RequestedAt { get; set; }
+        public HttpStatusCode ResponseCode { get; set; }
 
-        public DataPoint(int value, string label)
+        public DataPoint(double rawValue, DateTime requestedAt, HttpStatusCode responseCode)
         {
-            this.Value = value;
-            this.Label = label;
+            this.RawValue = rawValue;
+            this.RequestedAt = requestedAt;
+            this.ResponseCode = responseCode;
         }
+
+        public override string[] GetDescription() => new string[] { $"Response time: {this.RawValue.ToString("F2")}ms", $"Requested at: {this.RequestedAt.ToLocalTime()}", $"Response: {this.ResponseCode}" };
+
+        public override string GetXLabel() => this.RequestedAt.ToString("HH:mm");
+
+        public override string GetYLabel(int scale = 1) => $"{this.Value / scale}ms";
+
     }
 }
