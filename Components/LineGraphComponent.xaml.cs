@@ -9,6 +9,7 @@ using Microsoft.Maui.Essentials;
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
 using StatusApp.Domain.Model.Local;
+using StatusApp.Extensions;
 
 namespace StatusApp.Components
 {
